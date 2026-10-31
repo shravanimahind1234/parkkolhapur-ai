@@ -1,0 +1,6 @@
+{
+  "name": "ParkKolhapur AI",
+  "description": "Smart municipal parking guidance and bay reservation for Kolhapur City, featuring real-time KMC edge node telemetry, Mahalaxmi Temple shuttle passes, and AI occupancy forecasting.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
