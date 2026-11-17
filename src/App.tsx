@@ -1,5 +1,6 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Header } from './components/Header';
+import { LandingPage } from './components/LandingPage';
 import { LandmarkFilter } from './components/LandmarkFilter';
 import { VehicleSelector } from './components/VehicleSelector';
 import { AiSmartPick } from './components/AiSmartPick';
@@ -15,18 +16,25 @@ import { ProfileModal } from './components/ProfileModal';
 import { BookingsView } from './components/BookingsView';
 import { OwnerHubView } from './components/OwnerHubView';
 import { AdminView } from './components/AdminView';
+import { InteractiveMapModal } from './components/InteractiveMapModal';
+import { VehicleManagementModal } from './components/VehicleManagementModal';
+import { AuthModal } from './components/AuthModal';
 import {
   INITIAL_HUBS,
   INITIAL_BOOKINGS,
   INITIAL_NOTIFICATIONS,
+  INITIAL_VEHICLES,
+  INITIAL_USER,
 } from './data/mockData';
-import { ParkingHub, VehicleType, Booking, NotificationItem } from './types';
-import { RefreshCw } from 'lucide-react';
+import { ParkingHub, VehicleType, Booking, NotificationItem, UserVehicle, UserAccount } from './types';
+import { RefreshCw, MapPin, Navigation, Sparkles } from 'lucide-react';
 
 export default function App() {
   // Navigation & Role State
-  const [activeTab, setActiveTab] = useState<TabType>('explore');
+  const [activeTab, setActiveTab] = useState<TabType>('landing');
   const [currentRole, setCurrentRole] = useState<'SEEKER' | 'OWNER' | 'ADMIN'>('SEEKER');
+  const [currentUser, setCurrentUser] = useState<UserAccount | null>(INITIAL_USER);
+  const [vehicles, setVehicles] = useState<UserVehicle[]>(INITIAL_VEHICLES);
 
   // Search & Filter State
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -52,10 +60,14 @@ export default function App() {
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState<boolean>(false);
   const [isNotificationsDrawerOpen, setIsNotificationsDrawerOpen] = useState<boolean>(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
+  const [isMapModalOpen, setIsMapModalOpen] = useState<boolean>(false);
+  const [isVehicleModalOpen, setIsVehicleModalOpen] = useState<boolean>(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isListeningVoice, setIsListeningVoice] = useState<boolean>(false);
 
   // Unread notification count
   const unreadCount = notifications.filter((n) => n.unread).length;
+  const activeBookingsCount = bookings.filter((b) => b.status === 'ACTIVE').length;
 
   // Filter hubs based on search, landmark, vehicle type, and filter drawer options
   const filteredHubs = useMemo(() => {
@@ -127,6 +139,8 @@ export default function App() {
         return h;
       })
     );
+    // Switch to passes view so user immediately sees their ticket
+    setActiveTab('bookings');
   };
 
   const handleExtendBooking = (bookingId: string) => {
@@ -136,7 +150,7 @@ export default function App() {
           return {
             ...b,
             durationHours: b.durationHours + 1,
-            totalAmount: b.totalAmount + (b.hubId.includes('south') ? 30 : 20),
+            totalAmount: b.totalAmount + (b.hubId.includes('south') ? 30 : 25),
             endTime: 'Extended +1 Hour',
           };
         }
@@ -151,34 +165,94 @@ export default function App() {
     );
   };
 
+  // Vehicle Management Handlers
+  const handleAddVehicle = (newVeh: UserVehicle) => {
+    if (newVeh.isDefault) {
+      setVehicles((prev) => [newVeh, ...prev.map((v) => ({ ...v, isDefault: false }))]);
+    } else {
+      setVehicles((prev) => [...prev, newVeh]);
+    }
+  };
+
+  const handleDeleteVehicle = (id: string) => {
+    setVehicles((prev) => prev.filter((v) => v.id !== id));
+  };
+
+  const handleSetDefaultVehicle = (id: string) => {
+    setVehicles((prev) =>
+      prev.map((v) => ({ ...v, isDefault: v.id === id }))
+    );
+  };
+
+  // Auth Handler
+  const handleLoginSuccess = (user: UserAccount) => {
+    setCurrentUser(user);
+    setCurrentRole(user.role);
+    if (user.role === 'OWNER') setActiveTab('owner');
+    else if (user.role === 'ADMIN') setActiveTab('admin');
+  };
+
   const handleMarkAllNotificationsRead = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, unread: false })));
   };
 
-  // Sync role switch with tab switch if desired
+  // Sync role switch with tab switch
   const handleRoleSwitch = (newRole: 'SEEKER' | 'OWNER' | 'ADMIN') => {
     setCurrentRole(newRole);
+    if (currentUser) {
+      setCurrentUser({ ...currentUser, role: newRole });
+    }
     if (newRole === 'OWNER') setActiveTab('owner');
     else if (newRole === 'ADMIN') setActiveTab('admin');
     else setActiveTab('explore');
   };
 
   return (
-    <div className="bg-[#031427] text-[#d3e4fe] min-h-screen flex flex-col antialiased selection:bg-[#ffb95f] selection:text-[#472a00]">
-      {/* Top Header */}
+    <div className="bg-[#1A0A0F] text-[#FFF9EF] min-h-screen flex flex-col antialiased selection:bg-[#C6A15B] selection:text-[#3D101C]">
+      
+      {/* Top Royal Kolhapur Header */}
       <Header
         currentRole={currentRole}
+        activeTab={activeTab}
+        onNavigateTab={(tab) => setActiveTab(tab)}
         onRoleClick={() => setIsProfileModalOpen(true)}
         onNotificationsClick={() => setIsNotificationsDrawerOpen(true)}
         unreadNotificationsCount={unreadCount}
         onProfileClick={() => setIsProfileModalOpen(true)}
+        onOpenMap={() => setIsMapModalOpen(true)}
+        onOpenShuttle={() => setIsShuttleModalOpen(true)}
+        onOpenVehicles={() => setIsVehicleModalOpen(true)}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
+        currentUser={currentUser}
+        activeBookingsCount={activeBookingsCount}
       />
 
-      {/* Main Container */}
-      <main className="flex-1 flex flex-col relative w-full pt-16 pb-20 bg-[#031427] max-w-2xl mx-auto min-h-screen">
+      {/* Main Content Area */}
+      <main className="flex-1 flex flex-col relative w-full pt-20 pb-20 lg:pb-12 bg-[#1A0A0F]">
+        
+        {/* ========================================================
+            VIEW 1: LANDING PAGE
+            ======================================================== */}
+        {activeTab === 'landing' && (
+          <LandingPage
+            hubs={hubs}
+            onExploreHubs={() => setActiveTab('explore')}
+            onSelectHub={(hub) => setSelectedHubForSlot(hub)}
+            onOpenMap={() => setIsMapModalOpen(true)}
+            onOpenShuttle={() => setIsShuttleModalOpen(true)}
+            onOpenAuth={() => setIsAuthModalOpen(true)}
+            onSearchChange={(q) => setSearchQuery(q)}
+            onLandmarkSelect={(lm) => setSelectedLandmark(lm)}
+            onVehicleSelect={(v) => setSelectedVehicle(v)}
+          />
+        )}
+
+        {/* ========================================================
+            VIEW 2: LIVE PARKING EXPLORER
+            ======================================================== */}
         {activeTab === 'explore' && (
-          <div className="flex flex-col w-full">
-            {/* Search & Kolhapur Landmarks Bar */}
+          <div className="flex flex-col w-full animate-in fade-in">
+            {/* Search & Landmarks Filter Header */}
             <LandmarkFilter
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
@@ -189,8 +263,9 @@ export default function App() {
               isListening={isListeningVoice}
             />
 
-            <div className="px-4 flex flex-col gap-4 pt-4 pb-8">
-              {/* Vehicle Class Segment Switcher */}
+            <div className="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex flex-col gap-6 pt-6 pb-12">
+              
+              {/* Vehicle Category Switcher */}
               <VehicleSelector
                 selectedVehicle={selectedVehicle}
                 onSelectVehicle={setSelectedVehicle}
@@ -205,36 +280,52 @@ export default function App() {
                 />
               )}
 
-              {/* Real-time Parking Hubs List */}
-              <section className="flex flex-col gap-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-[18px] font-bold text-[#d3e4fe]">
-                      Live Parking Hubs
+              {/* Real-Time Parking Hubs Grid */}
+              <section className="flex flex-col gap-4">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div className="flex items-center gap-2.5">
+                    <h3 className="font-royal text-xl sm:text-2xl font-bold text-[#FFF9EF]">
+                      Live Kolhapur Parking Hubs
                     </h3>
-                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#26364a] text-[#c6c6cd]">
-                      {filteredHubs.length} near you
+                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#3D101C] text-[#C6A15B] border border-[#C6A15B]/30">
+                      {filteredHubs.length} Available
                     </span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-[#4edea3] text-[11px] font-bold">
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '6s' }} />
-                    <span>Realtime Supabase</span>
+
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setIsMapModalOpen(true)}
+                      className="px-3 py-1.5 rounded-xl bg-[#3D101C] hover:bg-[#651E2B] text-xs font-bold text-[#C6A15B] border border-[#C6A15B]/30 flex items-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      <Navigation className="w-3.5 h-3.5" />
+                      <span>Open City Map</span>
+                    </button>
+
+                    <div className="flex items-center gap-1.5 text-[#10B981] text-xs font-bold">
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '6s' }} />
+                      <span>KMC Edge Sync</span>
+                    </div>
                   </div>
                 </div>
 
                 {filteredHubs.length > 0 ? (
-                  filteredHubs.map((hub) => (
-                    <HubCard
-                      key={hub.id}
-                      hub={hub}
-                      vehicleType={selectedVehicle}
-                      onSelectSlot={(h) => setSelectedHubForSlot(h)}
-                      onDirections={(h) => setSelectedHubForDirections(h)}
-                    />
-                  ))
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {filteredHubs.map((hub) => (
+                      <HubCard
+                        key={hub.id}
+                        hub={hub}
+                        vehicleType={selectedVehicle}
+                        onSelectSlot={(h) => setSelectedHubForSlot(h)}
+                        onDirections={(h) => setSelectedHubForDirections(h)}
+                      />
+                    ))}
+                  </div>
                 ) : (
-                  <div className="p-8 rounded-2xl bg-[#102034] text-center text-[#c6c6cd]">
-                    <p className="text-[14px]">No parking hubs match your criteria.</p>
+                  <div className="p-12 rounded-3xl bg-[#22070E] border border-white/10 text-center text-[#B8ADA0] space-y-3">
+                    <p className="text-sm font-semibold text-[#FFF9EF]">
+                      No parking hubs match your active filter criteria.
+                    </p>
                     <button
                       onClick={() => {
                         setSearchQuery('');
@@ -247,23 +338,26 @@ export default function App() {
                           maxPrice: 60,
                         });
                       }}
-                      className="mt-3 text-[12px] font-bold text-[#ffb95f] underline cursor-pointer"
+                      className="px-4 py-2 rounded-xl gold-gradient-bg text-[#22070E] font-bold text-xs uppercase cursor-pointer shadow"
                     >
-                      Clear search & filters
+                      Reset All Filters
                     </button>
                   </div>
                 )}
               </section>
 
-              {/* Visual Cultural Landmark Teaser Card */}
+              {/* Ambabai Shuttle Teaser */}
               <ShuttleTeaser onOpenShuttleDetails={() => setIsShuttleModalOpen(true)} />
+
             </div>
           </div>
         )}
 
-        {/* Tab 2: Bookings */}
+        {/* ========================================================
+            VIEW 3: BOOKINGS & PASSES
+            ======================================================== */}
         {activeTab === 'bookings' && (
-          <div className="px-4 w-full">
+          <div className="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8">
             <BookingsView
               bookings={bookings}
               onExtendBooking={handleExtendBooking}
@@ -277,29 +371,38 @@ export default function App() {
           </div>
         )}
 
-        {/* Tab 3: Owner Hub */}
+        {/* ========================================================
+            VIEW 4: PRIVATE LOT OWNER PORTAL
+            ======================================================== */}
         {activeTab === 'owner' && (
-          <div className="px-4 w-full">
+          <div className="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8">
             <OwnerHubView />
           </div>
         )}
 
-        {/* Tab 4: Admin */}
+        {/* ========================================================
+            VIEW 5: KMC MUNICIPAL ADMIN
+            ======================================================== */}
         {activeTab === 'admin' && (
-          <div className="px-4 w-full">
+          <div className="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8">
             <AdminView />
           </div>
         )}
+
       </main>
 
-      {/* Sticky Bottom Navigation */}
+      {/* Sticky Mobile Bottom Navigation */}
       <BottomNav
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        activeBookingsCount={bookings.filter((b) => b.status === 'ACTIVE').length}
+        activeBookingsCount={activeBookingsCount}
       />
 
-      {/* Interactive Slot Matrix Modal */}
+      {/* ========================================================
+          MODALS & DRAWERS
+          ======================================================== */}
+
+      {/* Slot Picker Modal */}
       {selectedHubForSlot && (
         <SlotPickerModal
           hub={selectedHubForSlot}
@@ -310,7 +413,7 @@ export default function App() {
         />
       )}
 
-      {/* Turn-by-Turn Navigation Modal */}
+      {/* Turn-by-Turn Directions Modal */}
       {selectedHubForDirections && (
         <DirectionsModal
           hub={selectedHubForDirections}
@@ -319,13 +422,40 @@ export default function App() {
         />
       )}
 
-      {/* Temple Shuttle Corridor Modal */}
+      {/* Shree Ambabai Darshan E-Shuttle Modal */}
       <ShuttleModal
         isOpen={isShuttleModalOpen}
         onClose={() => setIsShuttleModalOpen(false)}
       />
 
-      {/* Filter Options Drawer */}
+      {/* Interactive Kolhapur City Map Modal */}
+      <InteractiveMapModal
+        isOpen={isMapModalOpen}
+        onClose={() => setIsMapModalOpen(false)}
+        hubs={hubs}
+        onSelectHubForSlot={(hub) => setSelectedHubForSlot(hub)}
+        onSelectHubForDirections={(hub) => setSelectedHubForDirections(hub)}
+        selectedVehicle={selectedVehicle}
+      />
+
+      {/* Vehicle Garage Management Modal */}
+      <VehicleManagementModal
+        isOpen={isVehicleModalOpen}
+        onClose={() => setIsVehicleModalOpen(false)}
+        vehicles={vehicles}
+        onAddVehicle={handleAddVehicle}
+        onDeleteVehicle={handleDeleteVehicle}
+        onSetDefaultVehicle={handleSetDefaultVehicle}
+      />
+
+      {/* Sign In & Sign Up Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
+
+      {/* Filter Drawer */}
       <FilterDrawer
         isOpen={isFilterDrawerOpen}
         onClose={() => setIsFilterDrawerOpen(false)}
@@ -342,7 +472,7 @@ export default function App() {
         }
       />
 
-      {/* City Alerts & Notifications Drawer */}
+      {/* City Alerts Drawer */}
       <NotificationsDrawer
         isOpen={isNotificationsDrawerOpen}
         onClose={() => setIsNotificationsDrawerOpen(false)}
@@ -350,13 +480,16 @@ export default function App() {
         onMarkAllAsRead={handleMarkAllNotificationsRead}
       />
 
-      {/* Citizen Profile & Role Switcher Modal */}
+      {/* Citizen Profile & Role Switcher */}
       <ProfileModal
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
         currentRole={currentRole}
         onRoleChange={handleRoleSwitch}
+        currentUser={currentUser}
+        onSignOut={() => setCurrentUser(null)}
       />
+
     </div>
   );
 }

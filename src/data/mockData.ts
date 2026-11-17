@@ -1,4 +1,4 @@
-import { ParkingHub, Booking, NotificationItem } from '../types';
+import { ParkingHub, Booking, NotificationItem, UserVehicle, UserAccount } from '../types';
 
 export const INITIAL_HUBS: ParkingHub[] = [
   {
@@ -12,13 +12,16 @@ export const INITIAL_HUBS: ParkingHub[] = [
     dayPassRate: { bike: 110, car: 220, ev: 320 },
     totalBays: 40,
     openBays: 18,
-    syncTime: 'Synced 12s ago via KMC Edge Node',
+    syncTime: 'Synced 12s ago via KMC Edge Node #1',
     isMunicipalApproved: true,
     hasEvCharger: true,
     hasCctv: true,
     hasCoveredShade: true,
     landmark: 'Mahalaxmi Temple',
+    heritageDistance: '3 min walk to Ambabai Darshan Mahadwar',
     coordinates: { lat: 16.6944, lng: 74.2238 },
+    imageUrl: 'https://images.unsplash.com/photo-1621847468516-1ed5d0df56fe?auto=format&fit=crop&w=800&q=80',
+    description: 'Closest smart parking to Shri Ambabai Mahalaxmi Mandir. Includes free eco-battery e-rickshaw shuttle to temple Mahadwar gate.',
     aiAdvisory: {
       badge: 'AI ADVISORY',
       probability: '88% surge probability',
@@ -42,6 +45,46 @@ export const INITIAL_HUBS: ParkingHub[] = [
     ],
   },
   {
+    id: 'hub-new-palace-royal',
+    name: 'New Palace Royal Heritage Parking',
+    area: 'Bhavani Mandap / Kasaba Bawada Road, Kolhapur',
+    distance: '3.1 km away',
+    distanceMeters: 3100,
+    walkingTimeMin: 4,
+    hourlyRate: { bike: 10, car: 25, ev: 40 },
+    dayPassRate: { bike: 80, car: 180, ev: 280 },
+    totalBays: 85,
+    openBays: 54,
+    syncTime: 'Fast check-in via Chhatrapati Shahu Gates',
+    isMunicipalApproved: true,
+    hasEvCharger: true,
+    hasCctv: true,
+    hasCoveredShade: true,
+    landmark: 'New Palace',
+    heritageDistance: 'Adjacent to Chhatrapati Shahu Maharaj Museum',
+    coordinates: { lat: 16.7161, lng: 74.2307 },
+    imageUrl: 'https://images.unsplash.com/photo-1599831104326-ed3f58721c5f?auto=format&fit=crop&w=800&q=80',
+    description: 'Expansive royal parking grounds with shaded avenue bays, CCTV surveillance, and museum access ticketing booth.',
+    aiAdvisory: {
+      badge: 'AI ADVISORY',
+      probability: '96% Availability Guarantee',
+      message: 'Optimal parking choice for family tourists visiting the royal palace grounds and museum exhibits.',
+      type: 'neutral',
+      icon: 'check_circle',
+    },
+    slots: [
+      { id: 'np1', code: 'NP-01', type: 'car', status: 'AVAILABLE', isCovered: true },
+      { id: 'np2', code: 'NP-02', type: 'car', status: 'AVAILABLE', isCovered: true },
+      { id: 'np3', code: 'NP-03', type: 'car', status: 'AVAILABLE', isCovered: true },
+      { id: 'np4', code: 'NP-04', type: 'car', status: 'OCCUPIED', isCovered: true },
+      { id: 'np5', code: 'NP-05', type: 'car', status: 'AVAILABLE', isCovered: false },
+      { id: 'np6', code: 'EV-NP1', type: 'ev', status: 'AVAILABLE', hasCharger: true, isCovered: true },
+      { id: 'np7', code: 'EV-NP2', type: 'ev', status: 'AVAILABLE', hasCharger: true, isCovered: true },
+      { id: 'np8', code: '2W-NP1', type: 'bike', status: 'AVAILABLE', isCovered: true },
+      { id: 'np9', code: '2W-NP2', type: 'bike', status: 'AVAILABLE', isCovered: true },
+    ],
+  },
+  {
     id: 'hub-rankala-chowpatty',
     name: 'Rankala Chowpatty Parking Plaza',
     area: 'Rankala Lake Promenade, Kolhapur',
@@ -58,7 +101,10 @@ export const INITIAL_HUBS: ParkingHub[] = [
     hasCctv: true,
     hasCoveredShade: false,
     landmark: 'Rankala Lake',
+    heritageDistance: '1 min walk to Lake Promenade & Sandhya Math',
     coordinates: { lat: 16.6908, lng: 74.2152 },
+    imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80',
+    description: 'Spacious lakeside plaza directly beside the Rankala sunset promenade, Shalini Palace, and famous Kolhapuri bhel food street.',
     aiAdvisory: {
       badge: 'AI ADVISORY',
       probability: 'Low Volatility',
@@ -87,14 +133,17 @@ export const INITIAL_HUBS: ParkingHub[] = [
     hourlyRate: { bike: 15, car: 25, ev: 40 },
     dayPassRate: { bike: 100, car: 180, ev: 280 },
     totalBays: 25,
-    openBays: 3,
+    openBays: 4,
     syncTime: 'High demand zone near historic square',
     isMunicipalApproved: true,
     hasEvCharger: false,
     hasCctv: true,
     hasCoveredShade: true,
     landmark: 'Bhavani Mandap',
+    heritageDistance: 'Directly in historical Rajwada courtyard',
     coordinates: { lat: 16.6957, lng: 74.2255 },
+    imageUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80',
+    description: 'Heritage square parking opposite the Royal Armory and Bhavani Temple. Walking access to Mahalaxmi Temple and Gujri jewelry lane.',
     aiAdvisory: {
       badge: 'AI ADVISORY',
       probability: 'Estimated fill in 8 mins',
@@ -107,9 +156,9 @@ export const INITIAL_HUBS: ParkingHub[] = [
       { id: 'bm2', code: 'BM-02', type: 'car', status: 'OCCUPIED', isCovered: true },
       { id: 'bm3', code: 'BM-03', type: 'car', status: 'OCCUPIED', isCovered: true },
       { id: 'bm4', code: 'BM-04', type: 'car', status: 'AVAILABLE', isCovered: true },
-      { id: 'bm5', code: 'BM-05', type: 'car', status: 'OCCUPIED', isCovered: true },
+      { id: 'bm5', code: 'BM-05', type: 'car', status: 'RESERVED', isCovered: true },
       { id: 'bm6', code: 'BM-06', type: 'car', status: 'AVAILABLE', isCovered: true },
-      { id: 'bm7', code: '2W-01', type: 'bike', status: 'OCCUPIED', isCovered: true },
+      { id: 'bm7', code: '2W-01', type: 'bike', status: 'AVAILABLE', isCovered: true },
     ],
   },
   {
@@ -129,7 +178,10 @@ export const INITIAL_HUBS: ParkingHub[] = [
     hasCctv: true,
     hasCoveredShade: true,
     landmark: 'Central Bus Stand (CBS)',
+    heritageDistance: 'Direct connection to Kolhapur Railway Station',
     coordinates: { lat: 16.7025, lng: 74.2415 },
+    imageUrl: 'https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=800&q=80',
+    description: 'Multi-level covered smart parkade with elevator access, luggage lockers, and fast battery charging stations.',
     aiAdvisory: {
       badge: 'AI ADVISORY',
       probability: 'Smooth Flow',
@@ -184,7 +236,7 @@ export const INITIAL_BOOKINGS: Booking[] = [
     startTime: 'Today, 04:30 PM',
     endTime: 'Today, 06:30 PM',
     durationHours: 2,
-    totalAmount: 60,
+    totalAmount: 65,
     status: 'ACTIVE',
     qrCodeValue: 'KMC-MAHALAXMI-A02-MH09DX4521',
     includeShuttlePass: true,
@@ -192,26 +244,48 @@ export const INITIAL_BOOKINGS: Booking[] = [
   },
 ];
 
+export const INITIAL_VEHICLES: UserVehicle[] = [
+  { id: 'v1', plateNumber: 'MH 09 DX 4521', type: 'car', nickname: 'White Creta SX', isDefault: true },
+  { id: 'v2', plateNumber: 'MH 09 BV 1008', type: 'bike', nickname: 'Royal Enfield Classic 350', isDefault: false },
+  { id: 'v3', plateNumber: 'MH 09 EV 9900', type: 'ev', nickname: 'Nexon EV Dark', isDefault: false },
+];
+
+export const INITIAL_USER: UserAccount = {
+  id: 'usr-kolhapur-1',
+  name: 'Shravani Mahind',
+  email: 'shravani@parkkolhapur.gov.in',
+  phone: '+91 98220 12345',
+  role: 'SEEKER',
+  avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80',
+};
+
 export const LANDMARKS = [
   { id: 'all', name: 'All Kolhapur' },
-  { id: 'Mahalaxmi Temple', name: 'Mahalaxmi Temple', icon: 'temple' },
-  { id: 'Rankala Lake', name: 'Rankala Lake', icon: 'water' },
-  { id: 'Central Bus Stand (CBS)', name: 'Central Bus Stand (CBS)', icon: 'bus' },
-  { id: 'Bhavani Mandap', name: 'Bhavani Mandap', icon: 'fort' },
-  { id: 'New Palace', name: 'New Palace', icon: 'castle' },
-  { id: 'Rajampuri Bazaar', name: 'Rajampuri Bazaar', icon: 'shopping' },
+  { id: 'Mahalaxmi Temple', name: 'Mahalaxmi Temple', icon: 'temple', heritage: '7th Century Chalukya Shrine' },
+  { id: 'New Palace', name: 'New Palace', icon: 'castle', heritage: 'Chhatrapati Shahu Royal Residence' },
+  { id: 'Rankala Lake', name: 'Rankala Lake', icon: 'water', heritage: 'Historic Lakeside Promenade' },
+  { id: 'Bhavani Mandap', name: 'Bhavani Mandap', icon: 'fort', heritage: 'Royal Court & Armory Complex' },
+  { id: 'Central Bus Stand (CBS)', name: 'Central Bus Stand (CBS)', icon: 'bus', heritage: 'Intercity Transit Hub' },
 ];
 
 export const SHUTTLE_INFO = {
-  name: 'Special Ambabai Darshan Shuttles',
+  name: 'Shree Ambabai Darshan E-Shuttle',
   tagline: 'Temple Corridor Transit • Free for ParkKolhapur Ticket Holders',
   route: 'South Gate Parking Hub ➔ Bhavani Mandap Arch ➔ Temple Mahadwar Gate',
   frequency: 'Every 4-6 minutes',
-  fleet: '12 Eco-Friendly Battery E-Rickshaws',
+  fleet: '16 Eco-Friendly Battery E-Rickshaws (KMC Green Corridor)',
   timings: '05:00 AM – 10:30 PM (Daily)',
   stops: [
     { name: 'South Gate Parking Terminal', distance: '0m', walk: '0 min' },
     { name: 'Bhavani Mandap Historical Arch', distance: '120m', walk: '1 min' },
     { name: 'Ambabai Temple Mahadwar (Main Gate)', distance: '250m', walk: '3 min' },
   ],
+};
+
+export const KOLHAPUR_STATS = {
+  totalBaysMonitored: '1,450+',
+  pilgrimsServedDaily: '28,000+',
+  kmcEdgeNodes: '42 Active',
+  averageParkingTimeSavedMin: '22 mins',
+  evChargersOnline: '18 Stations',
 };

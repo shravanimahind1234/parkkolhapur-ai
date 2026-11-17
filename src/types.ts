@@ -48,6 +48,9 @@ export interface ParkingHub {
   slots: ParkingSlot[];
   landmark: string;
   coordinates: { lat: number; lng: number };
+  imageUrl?: string;
+  description?: string;
+  heritageDistance?: string;
 }
 
 export interface Booking {
@@ -74,4 +77,21 @@ export interface NotificationItem {
   time: string;
   type: 'alert' | 'info' | 'success';
   unread: boolean;
+}
+
+export interface UserVehicle {
+  id: string;
+  plateNumber: string;
+  type: VehicleType;
+  nickname: string;
+  isDefault: boolean;
+}
+
+export interface UserAccount {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: 'SEEKER' | 'OWNER' | 'ADMIN';
+  avatarUrl?: string;
 }

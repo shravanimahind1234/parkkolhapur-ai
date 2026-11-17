@@ -1,5 +1,5 @@
-import React from 'react';
-import { X, Check } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Sliders, RotateCcw, Check, Zap, Umbrella, ShieldCheck } from 'lucide-react';
 
 export interface FilterOptions {
   maxDistanceMeters: number;
@@ -13,7 +13,7 @@ interface FilterDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   filters: FilterOptions;
-  onApplyFilters: (filters: FilterOptions) => void;
+  onApplyFilters: (newFilters: FilterOptions) => void;
   onResetFilters: () => void;
 }
 
@@ -24,12 +24,12 @@ export const FilterDrawer: React.FC<FilterDrawerProps> = ({
   onApplyFilters,
   onResetFilters,
 }) => {
+  const [localFilters, setLocalFilters] = useState<FilterOptions>(filters);
+
   if (!isOpen) return null;
 
-  const [tempFilters, setTempFilters] = React.useState<FilterOptions>(filters);
-
   const handleApply = () => {
-    onApplyFilters(tempFilters);
+    onApplyFilters(localFilters);
     onClose();
   };
 
@@ -39,147 +39,164 @@ export const FilterDrawer: React.FC<FilterDrawerProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-sm">
-      <div className="w-full max-w-md bg-[#0b1c30] border-t border-white/10 rounded-t-3xl shadow-2xl overflow-hidden p-5 space-y-4 animate-in slide-in-from-bottom duration-200">
-        <div className="flex items-center justify-between border-b border-white/5 pb-3">
-          <h3 className="text-[17px] font-bold text-[#d3e4fe]">
-            Filter Parking Hubs
-          </h3>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-md p-0 sm:p-4 animate-in fade-in">
+      <div className="w-full max-w-md bg-gradient-to-b from-[#3D101C] via-[#22070E] to-[#1A0A0F] border-t sm:border border-[#C6A15B]/35 rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] text-[#FFF9EF]">
+        
+        {/* Header */}
+        <div className="p-4 sm:p-5 bg-[#22070E] border-b border-white/10 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Sliders className="w-4 h-4 text-[#C6A15B]" />
+            <h3 className="font-royal text-base sm:text-lg font-bold text-[#FFF9EF]">
+              Refine Parking Hubs
+            </h3>
+          </div>
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[#1b2b3f] text-[#c6c6cd] hover:text-white flex items-center justify-center cursor-pointer"
+            className="w-8 h-8 rounded-full bg-[#1A0A0F] text-[#B8ADA0] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Max Distance */}
-        <div className="space-y-2">
-          <label className="text-[11px] font-bold text-[#c6c6cd] uppercase tracking-wider block">
-            Max Walking Distance
-          </label>
-          <div className="grid grid-cols-4 gap-2">
-            {[300, 600, 1500, 5000].map((dist) => (
-              <button
-                key={dist}
-                type="button"
-                onClick={() =>
-                  setTempFilters((prev) => ({ ...prev, maxDistanceMeters: dist }))
+        {/* Form Body */}
+        <div className="p-5 overflow-y-auto space-y-5 text-xs">
+          
+          {/* Max Distance Slider */}
+          <div>
+            <div className="flex justify-between mb-2">
+              <span className="font-bold text-[#E8DECE]">Maximum Walking Distance</span>
+              <span className="font-black text-[#C6A15B]">
+                {localFilters.maxDistanceMeters >= 1000
+                  ? `${(localFilters.maxDistanceMeters / 1000).toFixed(1)} km`
+                  : `${localFilters.maxDistanceMeters}m`}
+              </span>
+            </div>
+            <input
+              type="range"
+              min="300"
+              max="5000"
+              step="100"
+              value={localFilters.maxDistanceMeters}
+              onChange={(e) =>
+                setLocalFilters((prev) => ({
+                  ...prev,
+                  maxDistanceMeters: Number(e.target.value),
+                }))
+              }
+              className="w-full accent-[#C6A15B] cursor-pointer"
+            />
+          </div>
+
+          {/* Max Hourly Rate */}
+          <div>
+            <div className="flex justify-between mb-2">
+              <span className="font-bold text-[#E8DECE]">Maximum Hourly Rate</span>
+              <span className="font-black text-[#C6A15B]">₹{localFilters.maxPrice} / hr</span>
+            </div>
+            <input
+              type="range"
+              min="10"
+              max="80"
+              step="5"
+              value={localFilters.maxPrice}
+              onChange={(e) =>
+                setLocalFilters((prev) => ({
+                  ...prev,
+                  maxPrice: Number(e.target.value),
+                }))
+              }
+              className="w-full accent-[#C6A15B] cursor-pointer"
+            />
+          </div>
+
+          {/* Toggles */}
+          <div className="space-y-3 pt-2 border-t border-white/10">
+            <span className="text-[11px] uppercase font-extrabold tracking-wider text-[#C6A15B] block">
+              Facility Preferences
+            </span>
+
+            {/* EV Charger */}
+            <label className="flex items-center justify-between p-3 rounded-2xl bg-[#1A0A0F] border border-white/5 cursor-pointer">
+              <div className="flex items-center gap-2.5">
+                <Zap className="w-4 h-4 text-[#10B981]" />
+                <div>
+                  <span className="font-bold text-[#FFF9EF] block">EV Charging Station Only</span>
+                  <span className="text-[10px] text-[#B8ADA0]">60kW DC Fast Chargers</span>
+                </div>
+              </div>
+              <input
+                type="checkbox"
+                checked={localFilters.evOnly}
+                onChange={(e) =>
+                  setLocalFilters((prev) => ({ ...prev, evOnly: e.target.checked }))
                 }
-                className={`h-10 rounded-xl text-[12px] font-bold transition-all cursor-pointer ${
-                  tempFilters.maxDistanceMeters === dist
-                    ? 'bg-[#ffb95f] text-[#472a00]'
-                    : 'bg-[#1b2b3f] text-[#d3e4fe] hover:bg-[#26364a]'
-                }`}
-              >
-                {dist >= 1000 ? `${dist / 1000} km` : `${dist}m`}
-              </button>
-            ))}
+                className="w-4 h-4 accent-[#C6A15B] rounded cursor-pointer"
+              />
+            </label>
+
+            {/* Covered Shade */}
+            <label className="flex items-center justify-between p-3 rounded-2xl bg-[#1A0A0F] border border-white/5 cursor-pointer">
+              <div className="flex items-center gap-2.5">
+                <Umbrella className="w-4 h-4 text-[#C6A15B]" />
+                <div>
+                  <span className="font-bold text-[#FFF9EF] block">Covered Shade Bays Only</span>
+                  <span className="text-[10px] text-[#B8ADA0]">Solar canopy or covered parkade</span>
+                </div>
+              </div>
+              <input
+                type="checkbox"
+                checked={localFilters.coveredOnly}
+                onChange={(e) =>
+                  setLocalFilters((prev) => ({ ...prev, coveredOnly: e.target.checked }))
+                }
+                className="w-4 h-4 accent-[#C6A15B] rounded cursor-pointer"
+              />
+            </label>
+
+            {/* Municipal Approved */}
+            <label className="flex items-center justify-between p-3 rounded-2xl bg-[#1A0A0F] border border-white/5 cursor-pointer">
+              <div className="flex items-center gap-2.5">
+                <ShieldCheck className="w-4 h-4 text-[#C6A15B]" />
+                <div>
+                  <span className="font-bold text-[#FFF9EF] block">KMC Municipal Approved</span>
+                  <span className="text-[10px] text-[#B8ADA0]">Official city-metered lots</span>
+                </div>
+              </div>
+              <input
+                type="checkbox"
+                checked={localFilters.municipalOnly}
+                onChange={(e) =>
+                  setLocalFilters((prev) => ({ ...prev, municipalOnly: e.target.checked }))
+                }
+                className="w-4 h-4 accent-[#C6A15B] rounded cursor-pointer"
+              />
+            </label>
           </div>
+
         </div>
 
-        {/* Feature Toggles */}
-        <div className="space-y-2.5">
-          <label className="text-[11px] font-bold text-[#c6c6cd] uppercase tracking-wider block">
-            Amenities & Criteria
-          </label>
-
-          {/* EV Only */}
-          <label className="flex items-center justify-between p-3 rounded-xl bg-[#102034] border border-white/5 cursor-pointer">
-            <span className="text-[13px] text-[#d3e4fe] font-medium">
-              EV Fast Charger Available
-            </span>
-            <input
-              type="checkbox"
-              checked={tempFilters.evOnly}
-              onChange={(e) =>
-                setTempFilters((prev) => ({ ...prev, evOnly: e.target.checked }))
-              }
-              className="w-5 h-5 accent-[#4edea3] cursor-pointer"
-            />
-          </label>
-
-          {/* Covered Shade */}
-          <label className="flex items-center justify-between p-3 rounded-xl bg-[#102034] border border-white/5 cursor-pointer">
-            <span className="text-[13px] text-[#d3e4fe] font-medium">
-              Covered / Shaded Roof
-            </span>
-            <input
-              type="checkbox"
-              checked={tempFilters.coveredOnly}
-              onChange={(e) =>
-                setTempFilters((prev) => ({
-                  ...prev,
-                  coveredOnly: e.target.checked,
-                }))
-              }
-              className="w-5 h-5 accent-[#4edea3] cursor-pointer"
-            />
-          </label>
-
-          {/* Municipal Approved */}
-          <label className="flex items-center justify-between p-3 rounded-xl bg-[#102034] border border-white/5 cursor-pointer">
-            <span className="text-[13px] text-[#d3e4fe] font-medium">
-              KMC Municipal Approved Only
-            </span>
-            <input
-              type="checkbox"
-              checked={tempFilters.municipalOnly}
-              onChange={(e) =>
-                setTempFilters((prev) => ({
-                  ...prev,
-                  municipalOnly: e.target.checked,
-                }))
-              }
-              className="w-5 h-5 accent-[#ffb95f] cursor-pointer"
-            />
-          </label>
-        </div>
-
-        {/* Max Hourly Rate */}
-        <div className="space-y-1.5">
-          <div className="flex justify-between text-[12px]">
-            <span className="font-bold text-[#c6c6cd] uppercase tracking-wider">
-              Max Hourly Budget
-            </span>
-            <span className="font-bold text-[#ffb95f]">
-              Up to ₹{tempFilters.maxPrice}/hr
-            </span>
-          </div>
-          <input
-            type="range"
-            min="10"
-            max="60"
-            step="5"
-            value={tempFilters.maxPrice}
-            onChange={(e) =>
-              setTempFilters((prev) => ({
-                ...prev,
-                maxPrice: Number(e.target.value),
-              }))
-            }
-            className="w-full accent-[#ffb95f] cursor-pointer"
-          />
-        </div>
-
-        {/* Action Buttons */}
-        <div className="grid grid-cols-2 gap-3 pt-2">
+        {/* Footer Actions */}
+        <div className="p-4 bg-[#22070E] border-t border-white/10 flex items-center gap-3">
           <button
             type="button"
             onClick={handleReset}
-            className="h-11 rounded-xl bg-[#1b2b3f] text-[#c6c6cd] hover:text-white text-[13px] font-bold transition-colors cursor-pointer"
+            className="flex-1 py-2.5 rounded-xl bg-[#1A0A0F] hover:bg-[#2A0A12] text-xs font-bold text-[#B8ADA0] hover:text-[#FFF9EF] border border-white/5 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
           >
-            Reset All
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>Reset</span>
           </button>
+
           <button
             type="button"
             onClick={handleApply}
-            className="h-11 rounded-xl bg-[#ffb95f] text-[#472a00] hover:bg-[#ee9800] text-[13px] font-bold shadow-md transition-all cursor-pointer"
+            className="flex-1 py-2.5 rounded-xl gold-gradient-bg text-[#22070E] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 shadow hover:brightness-105 active:scale-95 transition-all cursor-pointer"
           >
-            Apply Filters
+            <Check className="w-3.5 h-3.5" />
+            <span>Apply Filters</span>
           </button>
         </div>
+
       </div>
     </div>
   );

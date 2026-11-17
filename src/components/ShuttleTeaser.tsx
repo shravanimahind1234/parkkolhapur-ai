@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bus, ArrowUpRight } from 'lucide-react';
+import { Bus, ArrowRight, Sparkles } from 'lucide-react';
 
 interface ShuttleTeaserProps {
   onOpenShuttleDetails: () => void;
@@ -9,31 +9,37 @@ export const ShuttleTeaser: React.FC<ShuttleTeaserProps> = ({
   onOpenShuttleDetails,
 }) => {
   return (
-    <section
-      onClick={onOpenShuttleDetails}
-      className="rounded-2xl bg-[#0b1c30] p-4 flex items-center gap-3.5 shadow-md border border-white/5 overflow-hidden relative cursor-pointer hover:border-[#ffb95f]/40 transition-all group"
-    >
-      <div
-        className="w-20 h-20 rounded-xl bg-cover bg-center flex-shrink-0 shadow-inner border border-white/10"
-        style={{
-          backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuC_Nm2xygXo62B4n4ddq5eF2rgwIhGhPe6iA4lfsqv-lZQl_zJhgDp10FPD6iZXS4NZ-cd1yBaqyDEAlxj1VniYFZ3JWNyw8B93ZI73RjTtVPWsvq9zyTaV2D4pH7k9QI5hD2sjOQqcvJUy2SKcRYsYD0PbatJV6y8NYqUpqmAuTizPf4AWHfEauLLtMT_9KSw6zYuLvJI66LC9AjUS4OvxHyfLD47tPTsP2AZeWUzqsP2MZfw73KDH1Q')`,
-        }}
-      />
-      <div className="flex flex-col min-w-0 flex-1">
-        <div className="flex items-center justify-between">
-          <span className="text-[10px] font-extrabold text-[#ffb95f] uppercase tracking-wider flex items-center gap-1">
-            <Bus className="w-3 h-3 text-[#ffb95f]" />
-            Temple Corridor Transit
-          </span>
-          <ArrowUpRight className="w-4 h-4 text-[#c6c6cd] group-hover:text-[#ffb95f] transition-colors" />
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#3D101C] via-[#651E2B] to-[#3D101C] p-5 sm:p-6 shadow-xl border border-[#C6A15B]/35">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl gold-gradient-bg flex items-center justify-center text-[#22070E] flex-shrink-0 shadow-md">
+            <Bus className="w-6 h-6" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black uppercase gold-gradient-bg text-[#22070E] px-2 py-0.5 rounded shadow-sm">
+                FREE AMBABAI CORRIDOR
+              </span>
+              <span className="text-xs text-[#10B981] font-bold">Every 4-6 Mins</span>
+            </div>
+            <h3 className="font-royal text-base sm:text-lg font-bold text-[#FFF9EF] mt-1">
+              Shree Ambabai Darshan E-Rickshaw Shuttle
+            </h3>
+            <p className="text-xs text-[#E8DECE] mt-0.5 max-w-md">
+              Complimentary battery transit from South Gate & Bhavani Mandap lots directly to the Temple Mahadwar gate.
+            </p>
+          </div>
         </div>
-        <h4 className="text-[15px] font-bold text-[#d3e4fe] truncate mt-0.5">
-          Special Ambabai Darshan Shuttles
-        </h4>
-        <p className="text-[12px] text-[#c6c6cd] line-clamp-2 mt-0.5 leading-snug">
-          Park at South Gate and hop on free battery e-rickshaws directly to the temple Mahadwar.
-        </p>
+
+        <button
+          type="button"
+          onClick={onOpenShuttleDetails}
+          className="px-4 py-2.5 rounded-xl gold-gradient-bg text-[#22070E] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow hover:brightness-105 active:scale-95 transition-all cursor-pointer whitespace-nowrap self-start sm:self-auto"
+        >
+          <span>View Schedule</span>
+          <ArrowRight className="w-3.5 h-3.5" />
+        </button>
       </div>
-    </section>
+    </div>
   );
 };

@@ -10,13 +10,17 @@ import {
   IndianRupee,
   ToggleLeft,
   ToggleRight,
+  ArrowRight,
+  MapPin,
+  Sparkles,
 } from 'lucide-react';
 
 export const OwnerHubView: React.FC = () => {
   const [bays, setBays] = useState([
     { id: 'b1', code: 'P-KMC-01', location: 'Bhausingji Road (Near South Gate)', rate: '₹30/hr', status: 'OCCUPIED', vehicle: 'MH 09 EF 8812', revenue: '₹120' },
-    { id: 'b2', code: 'P-KMC-02', location: 'Bhausingji Road (Near South Gate)', rate: '₹30/hr', status: 'AVAILABLE', vehicle: 'Empty', revenue: '₹90' },
-    { id: 'b3', code: 'P-KMC-03', location: 'Bhausingji Road (Near South Gate)', rate: '₹30/hr', status: 'AVAILABLE', vehicle: 'Empty', revenue: '₹180' },
+    { id: 'b2', code: 'P-KMC-02', location: 'Bhausingji Road (Near South Gate)', rate: '₹30/hr', status: 'AVAILABLE', vehicle: 'Empty (Open for booking)', revenue: '₹90' },
+    { id: 'b3', code: 'P-KMC-03', location: 'Bhausingji Road (Near South Gate)', rate: '₹30/hr', status: 'AVAILABLE', vehicle: 'Empty (Open for booking)', revenue: '₹180' },
+    { id: 'b4', code: 'P-KMC-04', location: 'Bhavani Mandap North Arch', rate: '₹25/hr', status: 'OCCUPIED', vehicle: 'MH 09 BV 3311', revenue: '₹150' },
   ]);
 
   const [isLiveEnabled, setIsLiveEnabled] = useState(true);
@@ -26,6 +30,22 @@ export const OwnerHubView: React.FC = () => {
   const [newPlotCapacity, setNewPlotCapacity] = useState('2');
   const [newPlotRate, setNewPlotRate] = useState('25');
   const [listSuccess, setListSuccess] = useState(false);
+
+  const toggleBayStatus = (id: string) => {
+    setBays((prev) =>
+      prev.map((b) => {
+        if (b.id === id) {
+          const nextStatus = b.status === 'AVAILABLE' ? 'OCCUPIED' : 'AVAILABLE';
+          return {
+            ...b,
+            status: nextStatus,
+            vehicle: nextStatus === 'OCCUPIED' ? 'Manual Gate Occupancy' : 'Empty (Open for booking)',
+          };
+        }
+        return b;
+      })
+    );
+  };
 
   const handleAddPlot = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,223 +74,202 @@ export const OwnerHubView: React.FC = () => {
   };
 
   return (
-    <div className="w-full flex flex-col gap-4 pb-20 pt-2 animate-in fade-in">
+    <div className="w-full flex flex-col gap-6 pb-20 pt-4 animate-in fade-in max-w-5xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-[20px] font-bold text-[#d3e4fe] tracking-tight">
-            Owner & Host Hub
-          </h2>
-          <p className="text-[12px] text-[#c6c6cd]">
-            Monetize private land under KMC Municipal Smart Corridor guidelines
+          <div className="flex items-center gap-2">
+            <h2 className="font-royal text-2xl sm:text-3xl font-extrabold text-[#FFF9EF] tracking-tight">
+              Host & Owner Portal
+            </h2>
+            <span className="text-[10px] font-black uppercase gold-gradient-bg text-[#22070E] px-2 py-0.5 rounded tracking-wider shadow">
+              KMC PARTNER
+            </span>
+          </div>
+          <p className="text-xs sm:text-sm text-[#C6A15B] mt-0.5">
+            Monetize private land and courtyard parking under Kolhapur Municipal Smart Mobility guidelines
           </p>
         </div>
+
         <button
           type="button"
           onClick={() => setShowAddModal(true)}
-          className="h-9 px-3 rounded-xl bg-[#ffb95f] text-[#472a00] font-bold text-[12px] flex items-center gap-1.5 shadow hover:bg-[#ee9800] transition-colors cursor-pointer"
+          className="h-10 px-4 rounded-xl gold-gradient-bg text-[#22070E] font-bold text-xs flex items-center justify-center gap-2 shadow-lg hover:brightness-105 active:scale-95 transition-all cursor-pointer"
         >
           <Plus className="w-4 h-4" />
-          <span>List Slot</span>
+          <span>List New Parking Bay</span>
         </button>
       </div>
 
       {/* Revenue & Metrics Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-        <div className="p-3.5 rounded-xl bg-[#102034] border border-white/5 flex flex-col">
-          <span className="text-[11px] font-bold text-[#c6c6cd] uppercase">Today's Earnings</span>
-          <div className="flex items-baseline gap-1 mt-1">
-            <span className="text-[24px] font-black text-[#4edea3]">₹1,480</span>
-          </div>
-          <span className="text-[10px] text-[#4edea3] flex items-center gap-1 mt-0.5 font-bold">
-            <TrendingUp className="w-3 h-3" /> +18% vs last Thursday
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="p-4 rounded-2xl bg-gradient-to-b from-[#3D101C] to-[#22070E] border border-[#C6A15B]/30 flex flex-col shadow">
+          <span className="text-[10px] font-bold text-[#B8ADA0] uppercase">Today's Revenue</span>
+          <span className="font-royal text-2xl font-black text-[#10B981] mt-1">₹1,840</span>
+          <span className="text-[10px] text-[#10B981] flex items-center gap-1 mt-0.5 font-bold">
+            <TrendingUp className="w-3 h-3" /> +24% vs last week
           </span>
         </div>
 
-        <div className="p-3.5 rounded-xl bg-[#102034] border border-white/5 flex flex-col">
-          <span className="text-[11px] font-bold text-[#c6c6cd] uppercase">Active Bays</span>
-          <div className="flex items-baseline gap-1 mt-1">
-            <span className="text-[24px] font-black text-[#ffb95f]">{bays.length}</span>
-            <span className="text-[12px] text-[#c6c6cd]">Slots</span>
-          </div>
-          <span className="text-[10px] text-[#c6c6cd] mt-0.5 font-medium">
-            KMC Sensor Paired
+        <div className="p-4 rounded-2xl bg-gradient-to-b from-[#3D101C] to-[#22070E] border border-[#C6A15B]/30 flex flex-col shadow">
+          <span className="text-[10px] font-bold text-[#B8ADA0] uppercase">Active Bays</span>
+          <span className="font-royal text-2xl font-black text-[#C6A15B] mt-1">{bays.length} Bays</span>
+          <span className="text-[10px] text-[#E8DECE]">
+            {bays.filter((b) => b.status === 'AVAILABLE').length} currently free
           </span>
         </div>
 
-        <div className="col-span-2 sm:col-span-1 p-3.5 rounded-xl bg-[#102034] border border-white/5 flex items-center justify-between sm:flex-col sm:items-start">
-          <div>
-            <span className="text-[11px] font-bold text-[#c6c6cd] uppercase block">
-              Gate Status
-            </span>
-            <span className="text-[13px] font-bold text-[#d3e4fe] mt-1 block">
-              {isLiveEnabled ? 'Online & Accepting' : 'Temporarily Closed'}
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={() => setIsLiveEnabled(!isLiveEnabled)}
-            className="cursor-pointer text-[#4edea3]"
-          >
-            {isLiveEnabled ? (
-              <ToggleRight className="w-8 h-8 text-[#4edea3]" />
-            ) : (
-              <ToggleLeft className="w-8 h-8 text-[#c6c6cd]" />
-            )}
-          </button>
+        <div className="p-4 rounded-2xl bg-gradient-to-b from-[#3D101C] to-[#22070E] border border-[#C6A15B]/30 flex flex-col shadow">
+          <span className="text-[10px] font-bold text-[#B8ADA0] uppercase">Municipal Payout</span>
+          <span className="font-royal text-2xl font-black text-[#FFF9EF] mt-1">₹12,450</span>
+          <span className="text-[10px] text-[#10B981] font-bold">Direct Bank Auto-Settled</span>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-gradient-to-b from-[#3D101C] to-[#22070E] border border-[#C6A15B]/30 flex flex-col shadow">
+          <span className="text-[10px] font-bold text-[#B8ADA0] uppercase">KMC Edge Status</span>
+          <span className="font-royal text-2xl font-black text-[#10B981] mt-1">100% Up</span>
+          <span className="text-[10px] text-[#C6A15B]">Real-time API Sync</span>
         </div>
       </div>
 
-      {/* KMC Partnership Verification Badge */}
-      <div className="p-3 rounded-xl bg-[#0f172a] border border-[#ffb95f]/30 flex items-center gap-3">
-        <ShieldCheck className="w-6 h-6 text-[#ffb95f] flex-shrink-0" />
-        <div className="text-[12px]">
-          <span className="font-bold text-[#ffb95f] block">
-            KMC Municipal Verified Host #KH-9921
-          </span>
-          <span className="text-[#c6c6cd]">
-            Payouts routed directly to Kolhapur District Central Co-op Bank via UPI.
+      {/* Live Bays Management List */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="font-royal text-lg font-bold text-[#FFF9EF]">
+            Your Managed Parking Bays
+          </h3>
+          <span className="text-xs text-[#B8ADA0]">
+            Tap toggle button to switch live status
           </span>
         </div>
-      </div>
 
-      {/* Manage Slots List */}
-      <div className="space-y-2">
-        <h3 className="text-[13px] font-bold text-[#c6c6cd] uppercase tracking-wider">
-          Your Registered Slots
-        </h3>
+        <div className="space-y-2.5">
+          {bays.map((bay) => {
+            const isAvailable = bay.status === 'AVAILABLE';
+            return (
+              <div
+                key={bay.id}
+                className="p-4 rounded-2xl bg-[#22070E] border border-white/5 hover:border-[#C6A15B]/40 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#651E2B] border border-[#C6A15B]/30 flex items-center justify-center font-black font-royal text-[#C6A15B] flex-shrink-0">
+                    {bay.code.slice(-2)}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-sm text-[#FFF9EF]">{bay.code}</span>
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase ${
+                        isAvailable ? 'bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/40' : 'bg-[#EF4444]/20 text-[#EF4444] border border-[#EF4444]/40'
+                      }`}>
+                        {bay.status}
+                      </span>
+                    </div>
+                    <span className="text-xs text-[#B8ADA0] flex items-center gap-1 mt-0.5">
+                      <MapPin className="w-3.5 h-3.5 text-[#C6A15B]" />
+                      <span>{bay.location}</span>
+                    </span>
+                    <span className="text-[11px] text-[#E8DECE] block mt-0.5">
+                      {bay.vehicle}
+                    </span>
+                  </div>
+                </div>
 
-        {bays.map((bay) => (
-          <div
-            key={bay.id}
-            className="p-3.5 rounded-xl bg-[#102034] border border-white/5 flex items-center justify-between"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#1b2b3f] flex items-center justify-center font-black text-sm text-[#ffb95f]">
-                {bay.code.split('-')[2]}
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[14px] font-bold text-[#d3e4fe]">
-                    {bay.code}
-                  </span>
-                  <span
-                    className={`text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded ${
-                      bay.status === 'AVAILABLE'
-                        ? 'bg-[#4edea3]/20 text-[#4edea3]'
-                        : 'bg-[#ffb4ab]/20 text-[#ffb4ab]'
+                <div className="flex items-center justify-between sm:justify-end gap-4 border-t sm:border-t-0 pt-2 sm:pt-0 border-white/5">
+                  <div className="text-right">
+                    <span className="text-xs font-bold text-[#C6A15B] block">{bay.rate}</span>
+                    <span className="text-[10px] text-[#B8ADA0]">Earned: {bay.revenue}</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => toggleBayStatus(bay.id)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+                      isAvailable
+                        ? 'bg-[#10B981]/20 text-[#10B981] border-[#10B981]/40 hover:bg-[#10B981]/30'
+                        : 'bg-[#EF4444]/20 text-[#EF4444] border-[#EF4444]/40 hover:bg-[#EF4444]/30'
                     }`}
                   >
-                    {bay.status}
-                  </span>
+                    {isAvailable ? 'Mark Occupied' : 'Mark Available'}
+                  </button>
                 </div>
-                <p className="text-[11px] text-[#8a9bb5] mt-0.5">
-                  {bay.location} • Rate: {bay.rate}
-                </p>
-                <p className="text-[11px] text-[#c6c6cd]">
-                  Vehicle: <span className="text-[#d3e4fe] font-semibold">{bay.vehicle}</span>
-                </p>
               </div>
-            </div>
-
-            <div className="text-right">
-              <span className="text-[14px] font-bold text-[#4edea3] block">
-                {bay.revenue}
-              </span>
-              <span className="text-[10px] text-[#8a9bb5]">earned today</span>
-            </div>
-          </div>
-        ))}
+            );
+          })}
+        </div>
       </div>
 
       {/* Add Slot Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md bg-[#0b1c30] border border-white/10 rounded-2xl p-5 space-y-4 shadow-2xl">
-            <h3 className="text-[17px] font-bold text-[#d3e4fe]">
-              List New Parking Spot in Kolhapur
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in">
+          <div className="w-full max-w-md bg-gradient-to-b from-[#3D101C] to-[#1A0A0F] border border-[#C6A15B]/40 rounded-3xl p-6 shadow-2xl text-[#FFF9EF]">
+            <h3 className="font-royal text-lg font-bold text-[#FFF9EF] mb-1">
+              List Private Parking Plot with KMC
             </h3>
-            <p className="text-[12px] text-[#c6c6cd]">
-              Compliant with Kolhapur Municipal Corporation (KMC) Smart Transit guidelines.
+            <p className="text-xs text-[#C6A15B] mb-4">
+              Authorized under Kolhapur Smart Municipal Parking Corridor
             </p>
 
-            {listSuccess ? (
-              <div className="py-6 text-center text-[#4edea3] font-bold flex flex-col items-center gap-2">
-                <CheckCircle className="w-10 h-10 animate-bounce" />
-                <span>Slot Registered & Verified with KMC Edge Node!</span>
+            <form onSubmit={handleAddPlot} className="space-y-3 text-xs">
+              <div>
+                <label className="text-[11px] font-bold text-[#E8DECE] block mb-1">Plot / Property Name</label>
+                <input
+                  type="text"
+                  value={newPlotName}
+                  onChange={(e) => setNewPlotName(e.target.value)}
+                  placeholder="e.g. Patil Wada Courtyard Parking"
+                  className="w-full px-3 py-2 rounded-xl bg-[#22070E] border border-white/10 text-xs text-[#FFF9EF] focus:outline-none focus:border-[#C6A15B]"
+                />
               </div>
-            ) : (
-              <form onSubmit={handleAddPlot} className="space-y-3">
+
+              <div>
+                <label className="text-[11px] font-bold text-[#E8DECE] block mb-1">Street Location & Landmark</label>
+                <input
+                  type="text"
+                  value={newPlotAddress}
+                  onChange={(e) => setNewPlotAddress(e.target.value)}
+                  placeholder="e.g. Near Bhavani Mandap Arch, Kolhapur"
+                  className="w-full px-3 py-2 rounded-xl bg-[#22070E] border border-white/10 text-xs text-[#FFF9EF] focus:outline-none focus:border-[#C6A15B]"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[11px] font-bold text-[#c6c6cd] uppercase block mb-1">
-                    Plot / Complex Name
-                  </label>
+                  <label className="text-[11px] font-bold text-[#E8DECE] block mb-1">Car Capacity</label>
                   <input
-                    type="text"
-                    required
-                    value={newPlotName}
-                    onChange={(e) => setNewPlotName(e.target.value)}
-                    placeholder="e.g. Mahadwar Courtyard Bay"
-                    className="w-full h-11 px-3 rounded-xl bg-[#102034] border border-white/10 text-white text-[13px] focus:outline-none"
+                    type="number"
+                    value={newPlotCapacity}
+                    onChange={(e) => setNewPlotCapacity(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl bg-[#22070E] border border-white/10 text-xs text-[#FFF9EF]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-bold text-[#c6c6cd] uppercase block mb-1">
-                    Kolhapur Street / Landmark
-                  </label>
+                  <label className="text-[11px] font-bold text-[#E8DECE] block mb-1">Hourly Rate (₹)</label>
                   <input
-                    type="text"
-                    required
-                    value={newPlotAddress}
-                    onChange={(e) => setNewPlotAddress(e.target.value)}
-                    placeholder="e.g. Gujri Bazaar, Mahalaxmi Temple"
-                    className="w-full h-11 px-3 rounded-xl bg-[#102034] border border-white/10 text-white text-[13px] focus:outline-none"
+                    type="number"
+                    value={newPlotRate}
+                    onChange={(e) => setNewPlotRate(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl bg-[#22070E] border border-white/10 text-xs text-[#FFF9EF]"
                   />
                 </div>
+              </div>
 
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="text-[11px] font-bold text-[#c6c6cd] uppercase block mb-1">
-                      Capacity (Cars)
-                    </label>
-                    <input
-                      type="number"
-                      value={newPlotCapacity}
-                      onChange={(e) => setNewPlotCapacity(e.target.value)}
-                      className="w-full h-11 px-3 rounded-xl bg-[#102034] border border-white/10 text-white text-[13px] focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-[11px] font-bold text-[#c6c6cd] uppercase block mb-1">
-                      Rate (₹/hr)
-                    </label>
-                    <input
-                      type="number"
-                      value={newPlotRate}
-                      onChange={(e) => setNewPlotRate(e.target.value)}
-                      className="w-full h-11 px-3 rounded-xl bg-[#102034] border border-white/10 text-white text-[13px] focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex gap-2 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => setShowAddModal(false)}
-                    className="flex-1 h-11 rounded-xl bg-[#1b2b3f] text-[#c6c6cd] font-bold text-[13px] hover:text-white cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="flex-1 h-11 rounded-xl bg-[#ffb95f] text-[#472a00] font-bold text-[13px] hover:bg-[#ee9800] shadow cursor-pointer"
-                  >
-                    Register Bay
-                  </button>
-                </div>
-              </form>
-            )}
+              <div className="pt-3 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowAddModal(false)}
+                  className="px-4 py-2 rounded-xl text-xs text-[#B8ADA0] hover:text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 rounded-xl gold-gradient-bg text-[#22070E] font-bold text-xs uppercase shadow"
+                >
+                  {listSuccess ? 'Listing Saved!' : 'Submit for KMC Verification'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

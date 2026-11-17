@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Bus, Clock, MapPin, CheckCircle, Sparkles } from 'lucide-react';
+import { X, Bus, Clock, MapPin, CheckCircle2, ShieldCheck, Sparkles, Navigation } from 'lucide-react';
 import { SHUTTLE_INFO } from '../data/mockData';
 
 interface ShuttleModalProps {
@@ -11,109 +11,114 @@ export const ShuttleModal: React.FC<ShuttleModalProps> = ({ isOpen, onClose }) =
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/75 backdrop-blur-sm p-0 sm:p-4">
-      <div className="w-full max-w-md bg-[#0b1c30] border-t sm:border border-white/10 rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col animate-in fade-in slide-in-from-bottom duration-200">
-        {/* Header with image */}
-        <div className="relative h-40 w-full overflow-hidden">
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{
-              backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuC_Nm2xygXo62B4n4ddq5eF2rgwIhGhPe6iA4lfsqv-lZQl_zJhgDp10FPD6iZXS4NZ-cd1yBaqyDEAlxj1VniYFZ3JWNyw8B93ZI73RjTtVPWsvq9zyTaV2D4pH7k9QI5hD2sjOQqcvJUy2SKcRYsYD0PbatJV6y8NYqUpqmAuTizPf4AWHfEauLLtMT_9KSw6zYuLvJI66LC9AjUS4OvxHyfLD47tPTsP2AZeWUzqsP2MZfw73KDH1Q')`,
-            }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0b1c30] via-[#0b1c30]/60 to-transparent" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-3 sm:p-4 animate-in fade-in">
+      <div className="w-full max-w-lg bg-gradient-to-b from-[#3D101C] via-[#22070E] to-[#1A0A0F] border border-[#C6A15B]/35 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] text-[#FFF9EF]">
+        
+        {/* Header */}
+        <div className="p-4 sm:p-5 bg-[#22070E] border-b border-white/10 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl gold-gradient-bg flex items-center justify-center text-[#22070E]">
+              <Bus className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-royal text-base sm:text-lg font-bold text-[#FFF9EF]">
+                {SHUTTLE_INFO.name}
+              </h3>
+              <p className="text-xs text-[#C6A15B]">
+                Complimentary Eco-Transit for ParkKolhapur Ticket Holders
+              </p>
+            </div>
+          </div>
+
           <button
-            type="button"
             onClick={onClose}
-            className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center transition-colors cursor-pointer"
+            type="button"
+            className="w-8 h-8 rounded-full bg-[#1A0A0F] text-[#B8ADA0] hover:text-[#FFF9EF] flex items-center justify-center transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
-          <div className="absolute bottom-3 left-4 right-4">
-            <span className="text-[10px] font-extrabold uppercase bg-[#ffb95f] text-[#472a00] px-2 py-0.5 rounded tracking-wider">
-              KMC TEMPLE CORRIDOR
-            </span>
-            <h3 className="text-[18px] font-bold text-white mt-1 leading-tight">
-              {SHUTTLE_INFO.name}
-            </h3>
-          </div>
         </div>
 
-        {/* Content */}
-        <div className="p-4 space-y-4">
-          <p className="text-[13px] text-[#c6c6cd] leading-snug">
-            {SHUTTLE_INFO.tagline}. Park your vehicle at any approved smart lot and enjoy instant, priority zero-emission transit to the historic Mahadwar.
-          </p>
+        {/* Modal Body */}
+        <div className="p-5 overflow-y-auto space-y-4 text-xs">
+          
+          {/* Banner */}
+          <div className="p-4 rounded-2xl bg-[#651E2B]/50 border border-[#C6A15B]/30 space-y-1">
+            <span className="text-[10px] uppercase font-black gold-gradient-bg text-[#22070E] px-2 py-0.5 rounded shadow">
+              Zero Fare Temple Corridor
+            </span>
+            <h4 className="font-royal text-base font-bold text-[#FFF9EF] pt-1">
+              Shree Ambabai Darshan E-Rickshaw Fleet
+            </h4>
+            <p className="text-[11px] text-[#E8DECE] leading-relaxed">
+              Show any valid ParkKolhapur parking pass on your phone to board freely at South Gate or Bhavani Mandap. Dedicated green corridor for senior citizens, families, and pilgrims.
+            </p>
+          </div>
 
-          <div className="grid grid-cols-2 gap-2">
-            <div className="p-2.5 rounded-xl bg-[#102034] border border-white/5 flex items-center gap-2">
-              <Clock className="w-4 h-4 text-[#ffb95f]" />
-              <div>
-                <span className="text-[10px] text-[#c6c6cd] block">Frequency</span>
-                <span className="text-[12px] font-bold text-[#d3e4fe]">
-                  {SHUTTLE_INFO.frequency}
-                </span>
-              </div>
+          {/* Quick Stats Grid */}
+          <div className="grid grid-cols-2 gap-2.5">
+            <div className="p-3 rounded-xl bg-[#1A0A0F] border border-white/5">
+              <span className="text-[10px] uppercase font-bold text-[#B8ADA0] block">Departure Frequency</span>
+              <span className="text-xs font-black text-[#10B981] mt-0.5 block">{SHUTTLE_INFO.frequency}</span>
             </div>
-            <div className="p-2.5 rounded-xl bg-[#102034] border border-white/5 flex items-center gap-2">
-              <Bus className="w-4 h-4 text-[#4edea3]" />
-              <div>
-                <span className="text-[10px] text-[#c6c6cd] block">Fleet Size</span>
-                <span className="text-[12px] font-bold text-[#d3e4fe]">
-                  {SHUTTLE_INFO.fleet}
-                </span>
-              </div>
+            <div className="p-3 rounded-xl bg-[#1A0A0F] border border-white/5">
+              <span className="text-[10px] uppercase font-bold text-[#B8ADA0] block">Fleet Size</span>
+              <span className="text-xs font-black text-[#C6A15B] mt-0.5 block">{SHUTTLE_INFO.fleet}</span>
             </div>
           </div>
 
-          {/* Route stops */}
-          <div className="space-y-2">
-            <span className="text-[11px] font-bold text-[#c6c6cd] uppercase tracking-wider block">
-              Dedicated Transit Route
+          {/* Transit Stops Route Timeline */}
+          <div className="space-y-2 pt-1">
+            <span className="text-[11px] uppercase font-extrabold tracking-wider text-[#C6A15B] block">
+              Corridor Stops & Boarding Points
             </span>
-            <div className="space-y-2">
-              {SHUTTLE_INFO.stops.map((stop, i) => (
-                <div
-                  key={stop.name}
-                  className="flex items-center justify-between p-2.5 rounded-xl bg-[#102034] border border-white/5"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <span className="w-5 h-5 rounded-full bg-[#ffb95f]/20 text-[#ffb95f] text-xs font-bold flex items-center justify-center">
-                      {i + 1}
-                    </span>
-                    <span className="text-[13px] font-medium text-[#d3e4fe]">
-                      {stop.name}
-                    </span>
+
+            <div className="space-y-2.5">
+              {SHUTTLE_INFO.stops.map((stop, idx) => (
+                <div key={stop.name} className="p-3 rounded-2xl bg-[#1A0A0F] border border-white/5 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-full gold-gradient-bg text-[#22070E] font-black text-xs flex items-center justify-center flex-shrink-0">
+                      {idx + 1}
+                    </div>
+                    <div>
+                      <span className="font-bold text-[#FFF9EF] block">{stop.name}</span>
+                      <span className="text-[10px] text-[#B8ADA0]">Boarding shelter with seating</span>
+                    </div>
                   </div>
-                  <span className="text-[11px] text-[#4edea3] font-semibold">
-                    {stop.walk}
-                  </span>
+                  <div className="text-right">
+                    <span className="text-xs font-bold text-[#C6A15B] block">{stop.walk}</span>
+                    <span className="text-[10px] text-[#B8ADA0]">{stop.distance}</span>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Pass status */}
-          <div className="p-3 rounded-xl bg-[#001c10] border border-[#4edea3]/30 flex items-center gap-2.5">
-            <CheckCircle className="w-5 h-5 text-[#4edea3] flex-shrink-0" />
-            <div className="text-[12px]">
-              <span className="font-bold text-[#4edea3] block">
-                Complimentary Boarding Pass
-              </span>
-              <span className="text-[#c6c6cd]">
-                Show your ParkKolhapur QR ticket to any shuttle pilot for free boarding.
-              </span>
+          {/* Operating Hours */}
+          <div className="p-3.5 rounded-2xl bg-[#1A0A0F] border border-white/5 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-[#C6A15B]" />
+              <span className="font-bold text-[#FFF9EF]">Daily Operating Hours</span>
             </div>
+            <span className="font-bold text-[#C6A15B]">{SHUTTLE_INFO.timings}</span>
           </div>
 
+        </div>
+
+        {/* Footer */}
+        <div className="p-4 bg-[#22070E] border-t border-white/10 flex items-center justify-between">
+          <span className="text-[11px] text-[#B8ADA0]">
+            KMC Green Mobility Initiative
+          </span>
           <button
             type="button"
             onClick={onClose}
-            className="w-full h-11 rounded-xl bg-[#ffb95f] text-[#472a00] font-bold text-[14px] hover:bg-[#ee9800] transition-colors cursor-pointer"
+            className="px-5 py-2 rounded-xl gold-gradient-bg text-[#22070E] font-bold text-xs"
           >
-            Got it, Return to Map
+            Close
           </button>
         </div>
+
       </div>
     </div>
   );

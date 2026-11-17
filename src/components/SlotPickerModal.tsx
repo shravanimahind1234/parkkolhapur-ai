@@ -7,6 +7,8 @@ import {
   CheckCircle2,
   Bus,
   Sparkles,
+  ArrowRight,
+  Lock,
 } from 'lucide-react';
 import { ParkingHub, ParkingSlot, VehicleType, Booking } from '../types';
 
@@ -60,7 +62,7 @@ export const SlotPickerModal: React.FC<SlotPickerModalProps> = ({
       status: 'ACTIVE',
       qrCodeValue: `KMC-${hub.name.slice(0, 4).toUpperCase()}-${selectedSlot.code}-${vehicleNumber.replace(/\s+/g, '')}`,
       includeShuttlePass: includeShuttle,
-      entryGate: 'KMC Municipal Barrier Gate 1',
+      entryGate: 'KMC Municipal Barrier Gate 1 (Bhavani Mandap Road)',
     };
 
     setIsSuccess(true);
@@ -72,235 +74,233 @@ export const SlotPickerModal: React.FC<SlotPickerModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/75 backdrop-blur-sm p-0 sm:p-4">
-      <div className="w-full max-w-lg bg-[#0b1c30] border-t sm:border border-white/10 rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col animate-in fade-in slide-in-from-bottom duration-200">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-md p-0 sm:p-4 animate-in fade-in">
+      <div className="w-full max-w-lg bg-gradient-to-b from-[#3D101C] via-[#22070E] to-[#1A0A0F] border-t sm:border border-[#C6A15B]/35 rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col text-[#FFF9EF]">
+        
         {/* Modal Header */}
-        <div className="p-4 bg-[#102034] border-b border-white/5 flex items-center justify-between">
+        <div className="p-4 sm:p-5 bg-[#22070E] border-b border-white/10 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-[17px] font-bold text-[#d3e4fe]">
+              <h3 className="font-royal text-base sm:text-lg font-bold text-[#FFF9EF]">
                 Select Parking Bay
               </h3>
-              <span className="text-[10px] font-extrabold text-[#4edea3] bg-[#001c10] border border-[#4edea3]/30 px-2 py-0.5 rounded-full">
+              <span className="text-[10px] font-extrabold text-[#10B981] bg-[#10B981]/15 border border-[#10B981]/30 px-2 py-0.5 rounded-full">
                 LIVE MATRIX
               </span>
             </div>
-            <p className="text-[12px] text-[#c6c6cd] mt-0.5">
+            <p className="text-xs text-[#C6A15B] mt-0.5 font-medium">
               {hub.name} • {hub.distance}
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[#1b2b3f] text-[#c6c6cd] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-full bg-[#1A0A0F] text-[#B8ADA0] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {isSuccess ? (
-          <div className="p-8 flex flex-col items-center justify-center text-center gap-3">
-            <div className="w-16 h-16 rounded-full bg-[#4edea3]/20 flex items-center justify-center text-[#4edea3] animate-bounce">
-              <CheckCircle2 className="w-10 h-10" />
+        {/* Modal Scrollable Body */}
+        <div className="p-4 sm:p-5 overflow-y-auto space-y-4">
+          
+          {/* Status Color Legend */}
+          <div className="flex items-center justify-between p-2.5 rounded-2xl bg-[#1A0A0F]/80 border border-white/10 text-[11px] font-bold">
+            <div className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-md bg-[#10B981]" />
+              <span className="text-[#10B981]">Available</span>
             </div>
-            <h4 className="text-[20px] font-bold text-[#d3e4fe]">
-              Bay {selectedSlot?.code} Reserved!
-            </h4>
-            <p className="text-[13px] text-[#c6c6cd] max-w-xs">
-              KMC Edge barrier auto-sync enabled. Dynamic QR code pass created in your Bookings tab.
-            </p>
+            <div className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-md bg-[#F59E0B]" />
+              <span className="text-[#F59E0B]">Reserved</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-md bg-[#EF4444]" />
+              <span className="text-[#EF4444]">Occupied</span>
+            </div>
           </div>
-        ) : (
-          <div className="p-4 overflow-y-auto space-y-4 no-scrollbar">
-            {/* Status Legend */}
-            <div className="flex items-center justify-around py-2 px-3 rounded-xl bg-[#000f21] border border-white/5 text-[11px]">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-sm bg-[#10B981]" />
-                <span className="text-[#c6c6cd]">Available</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-sm bg-[#F59E0B]" />
-                <span className="text-[#c6c6cd]">Reserved</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-sm bg-[#EF4444]" />
-                <span className="text-[#c6c6cd]">Occupied</span>
-              </div>
+
+          {/* Parking Floor Plan Grid */}
+          <div>
+            <div className="flex items-center justify-between text-xs font-bold text-[#C6A15B] uppercase mb-2">
+              <span>Ground Floor Bay Layout</span>
+              <span className="text-[10px] text-[#B8ADA0]">Tap an available bay</span>
             </div>
 
-            {/* Visual Slot Matrix */}
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[12px] font-bold text-[#c6c6cd] uppercase tracking-wider">
-                  Ground Floor Parking Grid
-                </span>
-                {selectedSlot && (
-                  <span className="text-[12px] font-bold text-[#ffb95f]">
-                    Selected: {selectedSlot.code}
-                  </span>
-                )}
-              </div>
+            <div className="grid grid-cols-4 gap-2.5 p-3 rounded-2xl bg-[#1A0A0F] border border-[#C6A15B]/25">
+              {hub.slots.map((slot) => {
+                const isSelected = selectedSlot?.id === slot.id;
+                const isAvailable = slot.status === 'AVAILABLE';
+                const isReserved = slot.status === 'RESERVED';
+                const isOccupied = slot.status === 'OCCUPIED';
 
-              <div className="grid grid-cols-4 gap-2">
-                {availableSlots.map((slot) => {
-                  const isAvailable = slot.status === 'AVAILABLE';
-                  const isSelected = selectedSlot?.id === slot.id;
+                // Status styling according to design requirements:
+                // green for available, red for occupied, amber for reserved
+                let slotBg = 'bg-[#10B981]/20 border-[#10B981] text-[#10B981] hover:bg-[#10B981]/30';
+                if (isReserved) {
+                  slotBg = 'bg-[#F59E0B]/20 border-[#F59E0B] text-[#F59E0B] cursor-not-allowed opacity-80';
+                } else if (isOccupied) {
+                  slotBg = 'bg-[#EF4444]/20 border-[#EF4444] text-[#EF4444] cursor-not-allowed opacity-60';
+                }
 
-                  let borderClass = 'border-[#EF4444]/40 bg-[#EF4444]/10 text-[#ffb4ab]';
-                  if (slot.status === 'RESERVED') {
-                    borderClass = 'border-[#F59E0B]/40 bg-[#F59E0B]/10 text-[#ffb95f]';
-                  } else if (isAvailable) {
-                    borderClass = isSelected
-                      ? 'border-[#ffb95f] bg-[#ffb95f]/20 text-[#ffb95f] shadow-[0_0_12px_rgba(255,185,95,0.3)] ring-2 ring-[#ffb95f]'
-                      : 'border-[#10B981]/50 bg-[#10B981]/10 text-[#4edea3] hover:border-[#10B981]';
-                  }
+                if (isSelected) {
+                  slotBg = 'bg-[#C6A15B] border-[#FFF9EF] text-[#22070E] font-black scale-105 shadow-lg';
+                }
 
-                  return (
-                    <button
-                      key={slot.id}
-                      type="button"
-                      disabled={!isAvailable}
-                      onClick={() => setSelectedSlot(slot)}
-                      className={`h-16 rounded-xl border p-1.5 flex flex-col justify-between transition-all relative ${borderClass} ${
-                        !isAvailable ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer active:scale-95'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between w-full">
-                        <span className="text-[11px] font-bold tracking-tight">
-                          {slot.code}
+                return (
+                  <button
+                    key={slot.id}
+                    type="button"
+                    disabled={!isAvailable}
+                    onClick={() => setSelectedSlot(slot)}
+                    className={`p-2.5 rounded-xl border-2 flex flex-col items-center justify-center transition-all cursor-pointer relative ${slotBg}`}
+                  >
+                    <span className="text-xs font-black tracking-wider leading-none">
+                      {slot.code}
+                    </span>
+
+                    <div className="flex items-center gap-1 mt-1">
+                      {slot.hasCharger && (
+                        <Zap className={`w-3 h-3 ${isSelected ? 'text-[#22070E]' : 'text-[#10B981]'}`} />
+                      )}
+                      {slot.isCovered && (
+                        <span className="text-[8px] uppercase tracking-tighter opacity-80">
+                          Shade
                         </span>
-                        {slot.hasCharger && (
-                          <Zap className="w-3 h-3 text-[#4edea3]" />
-                        )}
-                      </div>
-                      <span className="text-[9px] font-medium tracking-wide">
-                        {slot.status === 'AVAILABLE' ? 'OPEN' : slot.status}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
+                      )}
+                    </div>
+
+                    {isOccupied && (
+                      <Lock className="w-3 h-3 text-[#EF4444] absolute top-1 right-1" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Vehicle Plate Selection */}
+          <div>
+            <label className="text-xs font-bold text-[#E8DECE] block mb-1.5">
+              Vehicle Plate Number
+            </label>
+            <input
+              type="text"
+              value={vehicleNumber}
+              onChange={(e) => setVehicleNumber(e.target.value.toUpperCase())}
+              placeholder="e.g. MH 09 DX 4521"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-[#1A0A0F] border border-[#C6A15B]/30 text-xs font-bold text-[#FFF9EF] uppercase tracking-wider focus:outline-none focus:border-[#C6A15B]"
+            />
+          </div>
+
+          {/* Duration Selector */}
+          <div>
+            <div className="flex items-center justify-between text-xs mb-1.5">
+              <span className="font-bold text-[#E8DECE]">Parking Duration</span>
+              <button
+                type="button"
+                onClick={() => setIsDayPass(!isDayPass)}
+                className={`text-[11px] font-bold px-2 py-0.5 rounded cursor-pointer ${
+                  isDayPass
+                    ? 'bg-[#10B981] text-[#1A0A0F]'
+                    : 'bg-[#292725] text-[#C6A15B] border border-[#C6A15B]/30'
+                }`}
+              >
+                {isDayPass ? '✓ Day Pass Enabled' : 'Switch to Day Pass'}
+              </button>
             </div>
 
-            {/* Vehicle Number Input */}
-            <div className="space-y-1.5">
-              <label className="text-[11px] font-bold text-[#c6c6cd] uppercase tracking-wider block">
-                Vehicle Plate Number (Kolhapur RTO)
-              </label>
-              <div className="flex items-center rounded-xl bg-[#102034] border border-white/10 px-3 h-12">
-                <span className="text-[12px] font-black text-[#ffb95f] mr-2 px-1.5 py-0.5 rounded bg-[#0f172a] border border-[#ffb95f]/30">
-                  IND
-                </span>
-                <input
-                  type="text"
-                  value={vehicleNumber}
-                  onChange={(e) => setVehicleNumber(e.target.value)}
-                  placeholder="MH 09 XX 0000"
-                  className="w-full bg-transparent text-[14px] font-bold text-[#d3e4fe] uppercase tracking-wider focus:outline-none"
-                />
-              </div>
-            </div>
-
-            {/* Duration Selector */}
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-[#c6c6cd] uppercase tracking-wider">
-                  Parking Duration
-                </span>
-                <span className="text-[11px] text-[#ffb95f] font-semibold">
-                  Rate: ₹{hourlyRate}/hr
-                </span>
-              </div>
+            {!isDayPass ? (
               <div className="grid grid-cols-4 gap-2">
-                {[1, 2, 3].map((hr) => (
+                {[1, 2, 3, 5].map((hr) => (
                   <button
                     key={hr}
                     type="button"
-                    onClick={() => {
-                      setDurationHours(hr);
-                      setIsDayPass(false);
-                    }}
-                    className={`h-11 rounded-xl font-bold text-[13px] flex items-center justify-center transition-all cursor-pointer ${
-                      !isDayPass && durationHours === hr
-                        ? 'bg-[#ffb95f] text-[#472a00] shadow-md'
-                        : 'bg-[#1b2b3f] text-[#d3e4fe] hover:bg-[#26364a]'
+                    onClick={() => setDurationHours(hr)}
+                    className={`py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                      durationHours === hr
+                        ? 'bg-[#651E2B] border-[#C6A15B] text-[#FFF9EF] shadow'
+                        : 'bg-[#1A0A0F] border-white/5 text-[#B8ADA0] hover:border-white/20'
                     }`}
                   >
                     {hr} {hr === 1 ? 'Hour' : 'Hours'}
                   </button>
                 ))}
-                <button
-                  type="button"
-                  onClick={() => setIsDayPass(true)}
-                  className={`h-11 rounded-xl font-bold text-[12px] flex items-center justify-center transition-all cursor-pointer ${
-                    isDayPass
-                      ? 'bg-[#ffb95f] text-[#472a00] shadow-md'
-                      : 'bg-[#1b2b3f] text-[#d3e4fe] hover:bg-[#26364a]'
-                  }`}
-                >
-                  Day Pass
-                </button>
               </div>
-            </div>
-
-            {/* Temple Shuttle Add-on (Complimentary with ticket) */}
-            <div className="p-3 rounded-xl bg-[#001c10] border border-[#4edea3]/30 flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#4edea3]/20 flex items-center justify-center text-[#4edea3]">
-                  <Bus className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[12px] font-bold text-[#d3e4fe]">
-                      Ambabai Darshan E-Shuttle Pass
-                    </span>
-                    <span className="text-[9px] font-extrabold uppercase bg-[#4edea3] text-[#003824] px-1.5 py-0.2 rounded">
-                      FREE
-                    </span>
-                  </div>
-                  <span className="text-[11px] text-[#c6c6cd]">
-                    Priority battery rickshaw to Mahadwar
-                  </span>
-                </div>
+            ) : (
+              <div className="p-3 rounded-xl bg-[#10B981]/15 border border-[#10B981]/30 text-xs text-[#10B981] font-semibold">
+                Full-Day Unlimited Parking Pass valid until 11:59 PM tonight at this hub.
               </div>
-              <input
-                type="checkbox"
-                checked={includeShuttle}
-                onChange={(e) => setIncludeShuttle(e.target.checked)}
-                className="w-5 h-5 accent-[#4edea3] cursor-pointer"
-              />
-            </div>
-
-            {/* Price breakdown */}
-            <div className="p-3 rounded-xl bg-[#102034] border border-white/5 space-y-1.5 text-[12px]">
-              <div className="flex justify-between text-[#c6c6cd]">
-                <span>
-                  Base Fee ({isDayPass ? 'Day Pass' : `${durationHours} hrs × ₹${hourlyRate}`})
-                </span>
-                <span className="font-semibold text-[#d3e4fe]">₹{baseCost}</span>
-              </div>
-              <div className="flex justify-between text-[#c6c6cd]">
-                <span>KMC Municipal Infrastructure Cess</span>
-                <span className="font-semibold text-[#d3e4fe]">₹{kmcCess}</span>
-              </div>
-              <div className="pt-2 border-t border-white/10 flex justify-between text-[15px] font-bold text-[#ffb95f]">
-                <span>Total Amount Due</span>
-                <span>₹{totalAmount}</span>
-              </div>
-            </div>
-
-            {/* Confirm CTA */}
-            <button
-              type="button"
-              disabled={!selectedSlot}
-              onClick={handleConfirm}
-              className="w-full h-12 rounded-xl bg-[#ffb95f] hover:bg-[#ee9800] text-[#472a00] text-[15px] font-bold flex items-center justify-center gap-2 shadow-lg active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ShieldCheck className="w-5 h-5" />
-              <span>Confirm & Lock Bay {selectedSlot?.code || ''}</span>
-            </button>
+            )}
           </div>
-        )}
+
+          {/* Free Ambabai Temple E-Shuttle Option */}
+          <label className="flex items-start gap-3 p-3 rounded-2xl bg-[#651E2B]/40 border border-[#C6A15B]/30 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={includeShuttle}
+              onChange={(e) => setIncludeShuttle(e.target.checked)}
+              className="mt-0.5 accent-[#C6A15B] w-4 h-4 rounded"
+            />
+            <div className="text-xs">
+              <span className="font-bold text-[#FFF9EF] flex items-center gap-1.5">
+                <Bus className="w-3.5 h-3.5 text-[#C6A15B]" />
+                <span>Include Free Shree Ambabai Darshan E-Shuttle Pass</span>
+              </span>
+              <span className="text-[11px] text-[#B8ADA0] block mt-0.5">
+                Complimentary battery e-rickshaw transit between South Gate and Temple Mahadwar.
+              </span>
+            </div>
+          </label>
+
+          {/* Pricing Breakdown Summary */}
+          <div className="p-3.5 rounded-2xl bg-[#1A0A0F] border border-white/10 space-y-1.5 text-xs">
+            <div className="flex justify-between text-[#B8ADA0]">
+              <span>Base Parking Charge ({isDayPass ? 'Day Pass' : `${durationHours} hrs × ₹${hourlyRate}`})</span>
+              <span className="text-[#FFF9EF]">₹{baseCost}</span>
+            </div>
+            <div className="flex justify-between text-[#B8ADA0]">
+              <span>KMC Municipal Corridor Cess</span>
+              <span className="text-[#FFF9EF]">₹{kmcCess}</span>
+            </div>
+            <div className="flex justify-between text-[#B8ADA0]">
+              <span>Temple E-Shuttle Transit Pass</span>
+              <span className="text-[#10B981] font-bold">FREE (₹0)</span>
+            </div>
+            <div className="flex justify-between pt-2 border-t border-white/10 text-sm font-black">
+              <span className="text-[#C6A15B]">Total Payable</span>
+              <span className="text-[#FFF9EF]">₹{totalAmount}</span>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Modal Footer Confirm */}
+        <div className="p-4 sm:p-5 bg-[#22070E] border-t border-white/10">
+          <button
+            type="button"
+            disabled={!selectedSlot || isSuccess}
+            onClick={handleConfirm}
+            className={`w-full py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl transition-all cursor-pointer ${
+              isSuccess
+                ? 'bg-[#10B981] text-white'
+                : 'gold-gradient-bg text-[#22070E] hover:brightness-105 active:scale-95'
+            }`}
+          >
+            {isSuccess ? (
+              <>
+                <CheckCircle2 className="w-4 h-4" />
+                <span>Bay Reserved! Generating Pass...</span>
+              </>
+            ) : (
+              <>
+                <span>Confirm Reservation & Generate QR Pass</span>
+                <ArrowRight className="w-4 h-4" />
+              </>
+            )}
+          </button>
+        </div>
+
       </div>
     </div>
   );

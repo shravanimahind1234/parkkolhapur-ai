@@ -1,15 +1,15 @@
 import React from 'react';
-import { Search, Mic, SlidersHorizontal, Landmark, Waves, Bus, Shield, Castle, ShoppingBag } from 'lucide-react';
+import { Search, Mic, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { LANDMARKS } from '../data/mockData';
 
 interface LandmarkFilterProps {
   searchQuery: string;
-  onSearchChange: (val: string) => void;
+  onSearchChange: (query: string) => void;
   selectedLandmark: string;
   onSelectLandmark: (landmark: string) => void;
   onOpenFilterDrawer: () => void;
   onVoiceSearch: () => void;
-  isListening?: boolean;
+  isListening: boolean;
 }
 
 export const LandmarkFilter: React.FC<LandmarkFilterProps> = ({
@@ -19,93 +19,77 @@ export const LandmarkFilter: React.FC<LandmarkFilterProps> = ({
   onSelectLandmark,
   onOpenFilterDrawer,
   onVoiceSearch,
-  isListening = false,
+  isListening,
 }) => {
-  const getIcon = (id: string) => {
-    switch (id) {
-      case 'Mahalaxmi Temple':
-        return <Landmark className="w-3.5 h-3.5" />;
-      case 'Rankala Lake':
-        return <Waves className="w-3.5 h-3.5 text-[#4edea3]" />;
-      case 'Central Bus Stand (CBS)':
-        return <Bus className="w-3.5 h-3.5 text-[#ffb95f]" />;
-      case 'Bhavani Mandap':
-        return <Shield className="w-3.5 h-3.5 text-[#4edea3]" />;
-      case 'New Palace':
-        return <Castle className="w-3.5 h-3.5 text-[#ffb95f]" />;
-      case 'Rajampuri Bazaar':
-        return <ShoppingBag className="w-3.5 h-3.5 text-[#4edea3]" />;
-      default:
-        return <Landmark className="w-3.5 h-3.5" />;
-    }
-  };
-
   return (
-    <section className="px-4 pt-2 pb-3 bg-[#0b1c30]/70 backdrop-blur-md border-b border-white/5">
-      {/* Search Bar */}
-      <div className="relative w-full">
-        <div className="flex items-center h-12 rounded-xl bg-[#102034] px-3 shadow-md border border-white/5 focus-within:border-[#38bdf8]/50 transition-colors">
-          <Search className="w-5 h-5 text-[#ffb95f] mr-2 flex-shrink-0" />
-          <input
-            id="search-input"
-            type="text"
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Search temple gates, bazaars, CBS, lakes..."
-            className="w-full bg-transparent text-[14px] text-[#d3e4fe] placeholder-[#8a9bb5] focus:outline-none"
-          />
-          {searchQuery && (
+    <div className="w-full bg-[#22070E]/80 backdrop-blur-md border-b border-[#C6A15B]/20 py-3.5 px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto flex flex-col gap-3">
+        
+        {/* Search Row */}
+        <div className="flex items-center gap-2.5">
+          <div className="relative flex-1">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+              <Search className="w-4 h-4 text-[#C6A15B]" />
+            </div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
+              placeholder="Search by landmark, temple gate, or Kolhapur street..."
+              className="w-full pl-10 pr-10 py-3 rounded-2xl bg-[#1A0A0F] border border-[#C6A15B]/30 text-xs sm:text-sm text-[#FFF9EF] placeholder-[#B8ADA0] focus:outline-none focus:border-[#C6A15B] focus:ring-1 focus:ring-[#C6A15B] transition-all shadow-inner"
+            />
+            {/* Voice Search Button */}
             <button
-              onClick={() => onSearchChange('')}
-              className="text-xs text-[#8a9bb5] hover:text-white px-1.5 py-0.5"
+              type="button"
+              onClick={onVoiceSearch}
+              title="Voice Search"
+              className={`absolute right-2 top-2 w-8 h-8 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
+                isListening
+                  ? 'bg-[#EF4444] text-white animate-pulse'
+                  : 'bg-[#3D101C] text-[#C6A15B] hover:bg-[#651E2B]'
+              }`}
             >
-              ✕
+              <Mic className="w-4 h-4" />
             </button>
-          )}
-          <button
-            type="button"
-            onClick={onVoiceSearch}
-            aria-label="Voice Search"
-            className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
-              isListening
-                ? 'bg-[#ffb95f] text-[#472a00] animate-pulse'
-                : 'text-[#c6c6cd] hover:text-[#ffb95f] hover:bg-[#26364a]'
-            }`}
-          >
-            <Mic className="w-4 h-4" />
-          </button>
+          </div>
+
+          {/* Filter Drawer Toggle */}
           <button
             type="button"
             onClick={onOpenFilterDrawer}
-            aria-label="Open Filter Drawer"
-            className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#26364a] text-[#ffb95f] ml-1 hover:bg-[#ffb95f] hover:text-[#472a00] transition-colors cursor-pointer"
+            title="Filter Criteria"
+            className="h-11 px-3.5 rounded-2xl bg-[#3D101C] hover:bg-[#651E2B] border border-[#C6A15B]/30 text-[#FFF9EF] flex items-center gap-2 text-xs font-bold transition-all cursor-pointer shadow-sm flex-shrink-0"
           >
-            <SlidersHorizontal className="w-3.5 h-3.5" />
+            <SlidersHorizontal className="w-4 h-4 text-[#C6A15B]" />
+            <span className="hidden sm:inline">Filters</span>
           </button>
         </div>
-      </div>
 
-      {/* Quick Landmark Chips */}
-      <div className="flex items-center gap-2 overflow-x-auto pt-2.5 pb-0.5 no-scrollbar text-nowrap">
-        {LANDMARKS.filter((l) => l.id !== 'all').map((landmark) => {
-          const isActive = selectedLandmark === landmark.id;
-          return (
-            <button
-              key={landmark.id}
-              type="button"
-              onClick={() => onSelectLandmark(isActive ? 'all' : landmark.id)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold transition-all active:scale-95 cursor-pointer whitespace-nowrap ${
-                isActive
-                  ? 'bg-[#ffb95f] text-[#472a00] shadow-sm'
-                  : 'bg-[#1b2b3f] text-[#d3e4fe] hover:bg-[#26364a] border border-white/5'
-              }`}
-            >
-              {getIcon(landmark.id)}
-              <span>{landmark.name}</span>
-            </button>
-          );
-        })}
+        {/* Horizontal Landmark Chips */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+          <span className="text-[11px] uppercase tracking-wider font-extrabold text-[#C6A15B] whitespace-nowrap pl-0.5">
+            Destinations:
+          </span>
+          {LANDMARKS.map((lm) => {
+            const isSelected = selectedLandmark === lm.name || (lm.id === 'all' && selectedLandmark === 'all');
+            return (
+              <button
+                key={lm.id}
+                type="button"
+                onClick={() => onSelectLandmark(lm.name === 'All Kolhapur' ? 'all' : lm.name)}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer border ${
+                  isSelected
+                    ? 'bg-[#C6A15B] text-[#22070E] border-[#C6A15B] shadow-md font-extrabold scale-[1.02]'
+                    : 'bg-[#1A0A0F] text-[#E8DECE] border-white/10 hover:border-[#C6A15B]/40 hover:text-[#FFF9EF]'
+                }`}
+              >
+                {lm.name}
+              </button>
+            );
+          })}
+        </div>
+
       </div>
-    </section>
+    </div>
   );
 };

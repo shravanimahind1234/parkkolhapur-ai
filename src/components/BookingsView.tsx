@@ -10,6 +10,9 @@ import {
   LogOut,
   Download,
   AlertCircle,
+  CheckCircle2,
+  Navigation,
+  Sparkles,
 } from 'lucide-react';
 import { Booking } from '../types';
 
@@ -29,6 +32,7 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
   onOpenDirectionsForBooking,
 }) => {
   const activeBooking = bookings.find((b) => b.status === 'ACTIVE');
+  const pastBookings = bookings.filter((b) => b.status !== 'ACTIVE');
   const [showQrEnlarged, setShowQrEnlarged] = useState<boolean>(false);
   const [downloadSuccess, setDownloadSuccess] = useState<boolean>(false);
 
@@ -38,209 +42,237 @@ export const BookingsView: React.FC<BookingsViewProps> = ({
   };
 
   return (
-    <div className="w-full flex flex-col gap-4 pb-20 pt-2 animate-in fade-in">
+    <div className="w-full flex flex-col gap-6 pb-20 pt-4 animate-in fade-in max-w-4xl mx-auto">
+      {/* Title */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-[20px] font-bold text-[#d3e4fe] tracking-tight">
+          <h2 className="font-royal text-2xl sm:text-3xl font-extrabold text-[#FFF9EF] tracking-tight">
             Active Municipal Passes
           </h2>
-          <p className="text-[12px] text-[#c6c6cd]">
-            Present at KMC Edge barrier scanners or shuttle pick-up points
+          <p className="text-xs sm:text-sm text-[#C6A15B] mt-0.5">
+            Present QR pass at KMC Edge barrier scanners or temple e-shuttle pick-up points
           </p>
         </div>
-        <span className="px-2.5 py-1 rounded-full bg-[#4edea3]/15 text-[#4edea3] text-[11px] font-bold border border-[#4edea3]/30">
-          {bookings.filter((b) => b.status === 'ACTIVE').length} Active
+        <span className="px-3 py-1 rounded-full bg-[#10B981]/20 text-[#10B981] text-xs font-bold border border-[#10B981]/30">
+          {bookings.filter((b) => b.status === 'ACTIVE').length} Active Pass
         </span>
       </div>
 
       {activeBooking ? (
-        <div className="relative rounded-2xl bg-gradient-to-b from-[#102034] to-[#0b1c30] p-5 border border-white/10 shadow-2xl overflow-hidden">
+        /* Royal Kolhapur Municipal Ticket Card */
+        <div className="relative rounded-3xl bg-gradient-to-b from-[#3D101C] via-[#2A0D15] to-[#1A0A0F] p-6 sm:p-7 border border-[#C6A15B]/50 shadow-2xl overflow-hidden">
+          
           {/* Subtle watermarked background seal */}
-          <div className="absolute -right-8 -top-8 w-44 h-44 rounded-full bg-[#ffb95f]/5 pointer-events-none" />
+          <div className="absolute -right-12 -top-12 w-60 h-60 rounded-full bg-[#C6A15B]/10 blur-xl pointer-events-none" />
 
           {/* Ticket Header */}
-          <div className="flex items-start justify-between border-b border-white/10 pb-4">
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-white/10 pb-5 relative z-10">
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-extrabold uppercase bg-[#ffb95f] text-[#472a00] px-2 py-0.5 rounded tracking-wider">
-                  KMC PASS #{activeBooking.id}
+                <span className="text-[10px] font-black uppercase gold-gradient-bg text-[#22070E] px-2.5 py-0.5 rounded tracking-wider shadow">
+                  KMC MUNICIPAL PASS #{activeBooking.id}
                 </span>
-                <span className="flex items-center gap-1 text-[11px] font-bold text-[#4edea3]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#4edea3] animate-ping" />
-                  LIVE
+                <span className="flex items-center gap-1.5 text-xs font-black text-[#10B981]">
+                  <span className="w-2 h-2 rounded-full bg-[#10B981] animate-ping" />
+                  GATE ACTIVE
                 </span>
               </div>
-              <h3 className="text-[18px] font-bold text-[#d3e4fe] mt-1.5">
+              <h3 className="font-royal text-xl sm:text-2xl font-bold text-[#FFF9EF] mt-2">
                 {activeBooking.hubName}
               </h3>
-              <p className="text-[12px] text-[#c6c6cd] flex items-center gap-1 mt-0.5">
-                <MapPin className="w-3.5 h-3.5 text-[#ffb95f]" />
-                {activeBooking.entryGate}
+              <p className="text-xs text-[#E8DECE] flex items-center gap-1 mt-1">
+                <MapPin className="w-3.5 h-3.5 text-[#C6A15B]" />
+                <span>{activeBooking.entryGate}</span>
               </p>
             </div>
 
             {/* Bay Code Badge */}
-            <div className="flex flex-col items-center justify-center p-2 rounded-xl bg-[#000f21] border border-[#ffb95f]/30 px-3.5">
-              <span className="text-[10px] text-[#c6c6cd] font-bold">ASSIGNED BAY</span>
-              <span className="text-[24px] font-black text-[#ffb95f] leading-none mt-0.5">
+            <div className="flex sm:flex-col items-center justify-between sm:justify-center p-3 rounded-2xl bg-[#1A0A0F] border border-[#C6A15B]/40 px-5 shadow-inner">
+              <span className="text-[10px] text-[#C6A15B] font-bold uppercase tracking-wider">
+                Assigned Bay
+              </span>
+              <span className="text-2xl sm:text-3xl font-black text-[#C6A15B] leading-none mt-0.5">
                 {activeBooking.slotCode}
               </span>
             </div>
           </div>
 
           {/* Vehicle & Time Grid */}
-          <div className="grid grid-cols-2 gap-3 py-4 border-b border-white/10">
-            <div className="p-3 rounded-xl bg-[#000f21]/60 border border-white/5">
-              <span className="text-[10px] text-[#c6c6cd] uppercase font-bold block">
-                Vehicle Plate
-              </span>
-              <span className="text-[15px] font-extrabold text-[#d3e4fe] tracking-wide block mt-0.5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 py-5 border-b border-white/10 relative z-10 text-xs">
+            <div className="p-3 rounded-xl bg-[#1A0A0F]/80 border border-white/5">
+              <span className="text-[10px] text-[#B8ADA0] uppercase font-bold block">Vehicle Plate</span>
+              <span className="text-sm font-black text-[#FFF9EF] tracking-wider block mt-0.5">
                 {activeBooking.vehicleNumber}
               </span>
-              <span className="text-[10px] text-[#4edea3] uppercase font-bold">
-                {activeBooking.vehicleType} • FASTTAG PAIRED
+              <span className="text-[10px] text-[#10B981] font-bold uppercase">
+                {activeBooking.vehicleType.toUpperCase()} PASS
               </span>
             </div>
 
-            <div className="p-3 rounded-xl bg-[#000f21]/60 border border-white/5">
-              <span className="text-[10px] text-[#c6c6cd] uppercase font-bold block">
-                Valid Until
+            <div className="p-3 rounded-xl bg-[#1A0A0F]/80 border border-white/5">
+              <span className="text-[10px] text-[#B8ADA0] uppercase font-bold block">Start Time</span>
+              <span className="text-xs font-bold text-[#FFF9EF] block mt-0.5">
+                {activeBooking.startTime}
               </span>
-              <span className="text-[15px] font-extrabold text-[#ffb95f] block mt-0.5">
+              <span className="text-[10px] text-[#B8ADA0]">Checked In</span>
+            </div>
+
+            <div className="p-3 rounded-xl bg-[#1A0A0F]/80 border border-white/5">
+              <span className="text-[10px] text-[#B8ADA0] uppercase font-bold block">Valid Until</span>
+              <span className="text-xs font-bold text-[#C6A15B] block mt-0.5">
                 {activeBooking.endTime}
               </span>
-              <span className="text-[10px] text-[#c6c6cd]">
-                Total: ₹{activeBooking.totalAmount} Paid
+              <span className="text-[10px] text-[#C6A15B] font-bold">
+                {activeBooking.durationHours} Hours Allocated
               </span>
+            </div>
+
+            <div className="p-3 rounded-xl bg-[#1A0A0F]/80 border border-white/5">
+              <span className="text-[10px] text-[#B8ADA0] uppercase font-bold block">Amount Paid</span>
+              <span className="text-sm font-black text-[#FFF9EF] block mt-0.5">
+                ₹{activeBooking.totalAmount}
+              </span>
+              <span className="text-[10px] text-[#10B981] font-bold">Paid Online (KMC)</span>
             </div>
           </div>
 
-          {/* Dynamic QR Code & Barcode */}
-          <div className="py-4 flex flex-col items-center justify-center">
-            <div
-              onClick={() => setShowQrEnlarged(!showQrEnlarged)}
-              className="p-3 bg-white rounded-2xl shadow-xl cursor-pointer hover:scale-105 transition-transform flex flex-col items-center"
-            >
-              {/* Crisp SVG QR code representation */}
-              <div className="w-36 h-36 bg-[#0b1c30] p-2 rounded-xl flex items-center justify-center relative overflow-hidden">
-                <div className="grid grid-cols-6 gap-1 w-full h-full p-1 bg-white rounded">
-                  {Array.from({ length: 36 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className={`rounded-xs ${
-                        (i * 7 + 3) % 3 === 0 || i === 0 || i === 5 || i === 30 || i === 35
-                          ? 'bg-[#031427]'
-                          : 'bg-transparent'
-                      }`}
-                    />
-                  ))}
-                </div>
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-8 h-8 rounded-full bg-[#ffb95f] flex items-center justify-center text-[#472a00] font-black text-xs shadow-md">
-                    KMC
+          {/* QR Code & Scan Instructions */}
+          <div className="py-5 flex flex-col sm:flex-row items-center justify-between gap-5 border-b border-white/10 relative z-10">
+            <div className="flex items-center gap-4">
+              <div
+                onClick={() => setShowQrEnlarged(!showQrEnlarged)}
+                className="w-24 h-24 p-2 rounded-2xl bg-white flex items-center justify-center cursor-pointer shadow-lg hover:scale-105 transition-transform"
+              >
+                {/* Visual stylized QR code */}
+                <div className="w-full h-full border-2 border-black p-1 flex flex-col justify-between">
+                  <div className="flex justify-between">
+                    <div className="w-5 h-5 bg-black" />
+                    <div className="w-5 h-5 bg-black" />
+                  </div>
+                  <div className="text-center font-mono text-[7px] text-black font-black leading-tight">
+                    KMC PASS<br />SCAN ME
+                  </div>
+                  <div className="flex justify-between items-end">
+                    <div className="w-5 h-5 bg-black" />
+                    <div className="w-4 h-4 bg-black" />
                   </div>
                 </div>
               </div>
-              <span className="text-[10px] font-bold text-[#031427] mt-2 tracking-widest uppercase">
-                {activeBooking.qrCodeValue}
-              </span>
-            </div>
-            <span className="text-[11px] text-[#8a9bb5] mt-2">
-              Tap QR code to show scanner at exit barrier
-            </span>
-          </div>
 
-          {/* Complimentary Shuttle Ticket Card */}
-          {activeBooking.includeShuttlePass && (
-            <div
-              onClick={onOpenShuttle}
-              className="mt-2 p-3 rounded-xl bg-[#001c10] border border-[#4edea3]/40 flex items-center justify-between cursor-pointer hover:border-[#4edea3] transition-all"
-            >
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#4edea3]/20 text-[#4edea3] flex items-center justify-center">
-                  <Bus className="w-4 h-4" />
+              <div>
+                <span className="text-xs font-bold text-[#FFF9EF] block">
+                  Scan at Barrier Ingress / Egress
+                </span>
+                <span className="text-[11px] text-[#B8ADA0] block mt-0.5">
+                  Point QR directly at the optical camera scanner at Gate Barrier 1.
+                </span>
+                <span className="text-[10px] text-[#C6A15B] font-mono font-bold mt-1 block">
+                  REF: {activeBooking.qrCodeValue}
+                </span>
+              </div>
+            </div>
+
+            {/* Free Shuttle Pass Included */}
+            {activeBooking.includeShuttlePass && (
+              <div
+                onClick={onOpenShuttle}
+                className="p-3.5 rounded-2xl bg-[#651E2B]/50 border border-[#C6A15B]/40 flex items-center gap-3 cursor-pointer hover:bg-[#651E2B]/70 transition-colors"
+              >
+                <div className="w-10 h-10 rounded-xl gold-gradient-bg flex items-center justify-center text-[#22070E] flex-shrink-0">
+                  <Bus className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[13px] font-bold text-[#d3e4fe]">
-                      Ambabai Darshan E-Rickshaw Pass
-                    </span>
-                    <span className="text-[9px] font-extrabold uppercase bg-[#4edea3] text-[#003824] px-1.5 py-0.5 rounded">
-                      VALID
-                    </span>
-                  </div>
-                  <span className="text-[11px] text-[#c6c6cd]">
-                    Free shuttle from South Gate to Temple Mahadwar
+                  <span className="text-xs font-black text-[#FFF9EF] block">
+                    Free Shree Ambabai Darshan Shuttle
+                  </span>
+                  <span className="text-[11px] text-[#C6A15B] block">
+                    Valid for all passengers on this pass • Tap for schedule
                   </span>
                 </div>
               </div>
-              <span className="text-[12px] font-bold text-[#4edea3]">View Route ➔</span>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <div className="pt-5 flex flex-wrap items-center justify-between gap-3 relative z-10">
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => onExtendBooking(activeBooking.id)}
+                className="px-4 py-2.5 rounded-xl bg-[#651E2B] hover:bg-[#7E2837] text-xs font-bold text-[#FFF9EF] border border-[#C6A15B]/30 flex items-center gap-1.5 transition-colors cursor-pointer shadow"
+              >
+                <PlusCircle className="w-4 h-4 text-[#C6A15B]" />
+                <span>Extend +1 Hour</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => onOpenDirectionsForBooking(activeBooking.hubId)}
+                className="px-4 py-2.5 rounded-xl bg-[#1A0A0F] hover:bg-[#22070E] text-xs font-bold text-[#E8DECE] border border-white/10 flex items-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <Navigation className="w-4 h-4 text-[#C6A15B]" />
+                <span>Navigate to Lot</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleDownload}
+                className="px-4 py-2.5 rounded-xl bg-[#1A0A0F] hover:bg-[#22070E] text-xs font-bold text-[#E8DECE] border border-white/10 flex items-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <Download className="w-4 h-4 text-[#C6A15B]" />
+                <span>{downloadSuccess ? 'Downloaded!' : 'Pass Receipt'}</span>
+              </button>
             </div>
-          )}
-
-          {/* Ticket Management Actions */}
-          <div className="grid grid-cols-3 gap-2 mt-4">
-            <button
-              type="button"
-              onClick={() => onExtendBooking(activeBooking.id)}
-              className="h-11 rounded-xl bg-[#1b2b3f] hover:bg-[#26364a] text-[#d3e4fe] text-[12px] font-bold flex items-center justify-center gap-1.5 border border-white/5 transition-colors cursor-pointer"
-            >
-              <PlusCircle className="w-4 h-4 text-[#ffb95f]" />
-              <span>Extend +1 Hr</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={handleDownload}
-              className="h-11 rounded-xl bg-[#1b2b3f] hover:bg-[#26364a] text-[#d3e4fe] text-[12px] font-bold flex items-center justify-center gap-1.5 border border-white/5 transition-colors cursor-pointer"
-            >
-              <Download className="w-4 h-4 text-[#4edea3]" />
-              <span>{downloadSuccess ? 'Downloaded!' : 'Receipt'}</span>
-            </button>
 
             <button
               type="button"
               onClick={() => onCancelBooking(activeBooking.id)}
-              className="h-11 rounded-xl bg-[#93000a]/30 hover:bg-[#93000a]/50 text-[#ffb4ab] text-[12px] font-bold flex items-center justify-center gap-1.5 border border-[#ffb4ab]/20 transition-colors cursor-pointer"
+              className="px-3.5 py-2 rounded-xl bg-transparent hover:bg-white/5 text-xs font-bold text-[#EF4444] transition-colors cursor-pointer"
             >
-              <LogOut className="w-4 h-4" />
-              <span>Exit Bay</span>
+              Check Out / Complete Visit
             </button>
           </div>
+
         </div>
       ) : (
-        <div className="p-8 rounded-2xl bg-[#102034] border border-white/5 text-center flex flex-col items-center justify-center gap-3">
-          <div className="w-14 h-14 rounded-full bg-[#1b2b3f] flex items-center justify-center text-[#ffb95f]">
-            <Ticket className="w-7 h-7" />
-          </div>
-          <h3 className="text-[16px] font-bold text-[#d3e4fe]">
-            No Active Parking Passes
+        <div className="p-8 rounded-3xl bg-[#22070E] border border-white/10 text-center space-y-3">
+          <Ticket className="w-12 h-12 text-[#C6A15B] mx-auto opacity-70" />
+          <h3 className="font-royal text-lg font-bold text-[#FFF9EF]">
+            No Active Municipal Parking Passes
           </h3>
-          <p className="text-[13px] text-[#c6c6cd] max-w-xs">
-            Reserve a smart slot at Mahalaxmi Temple, Rankala Lake or CBS in the Explore tab.
+          <p className="text-xs text-[#B8ADA0] max-w-sm mx-auto">
+            Reserve a bay at Mahalaxmi Temple, New Palace, or Rankala Lake to get your instant QR barrier pass.
           </p>
         </div>
       )}
 
-      {/* Historical Passes */}
-      <div className="mt-2 space-y-2">
-        <h3 className="text-[14px] font-bold text-[#c6c6cd] uppercase tracking-wider">
-          Past Trip History
-        </h3>
-        <div className="p-3.5 rounded-xl bg-[#102034] border border-white/5 flex items-center justify-between">
-          <div>
-            <span className="text-[14px] font-bold text-[#d3e4fe] block">
-              Rankala Chowpatty Parking Plaza
-            </span>
-            <span className="text-[11px] text-[#8a9bb5]">
-              Yesterday • Bay R-04 • MH 09 DX 4521 • ₹40 Paid
-            </span>
+      {/* Booking History */}
+      {pastBookings.length > 0 && (
+        <div className="space-y-3 pt-4">
+          <h3 className="font-royal text-lg font-bold text-[#C6A15B]">
+            Past Parking Passes & Receipts
+          </h3>
+          <div className="space-y-2">
+            {pastBookings.map((b) => (
+              <div
+                key={b.id}
+                className="p-4 rounded-2xl bg-[#22070E] border border-white/5 flex items-center justify-between text-xs"
+              >
+                <div>
+                  <div className="font-bold text-[#FFF9EF]">{b.hubName}</div>
+                  <div className="text-[11px] text-[#B8ADA0]">
+                    Bay {b.slotCode} • {b.vehicleNumber} • {b.startTime}
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="font-black text-[#FFF9EF]">₹{b.totalAmount}</div>
+                  <span className="text-[10px] font-bold text-[#B8ADA0]">COMPLETED</span>
+                </div>
+              </div>
+            ))}
           </div>
-          <span className="text-[11px] font-bold text-[#4edea3] bg-[#001c10] border border-[#4edea3]/30 px-2 py-0.5 rounded">
-            COMPLETED
-          </span>
         </div>
-      </div>
+      )}
     </div>
   );
 };
