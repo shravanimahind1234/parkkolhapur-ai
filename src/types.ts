@@ -1,6 +1,30 @@
 export type VehicleType = 'bike' | 'car' | 'ev';
 
+export type Language = 'en' | 'mr' | 'hi';
+
 export type SlotStatus = 'AVAILABLE' | 'RESERVED' | 'OCCUPIED' | 'MAINTENANCE';
+
+export type UserRole = 'CUSTOMER' | 'OWNER' | 'ADMIN';
+
+export type PoiCategory = 'hospital' | 'food' | 'stay';
+
+export interface NearbyPlace {
+  id: string;
+  name: string;
+  marathiName?: string;
+  category: PoiCategory;
+  distance: string;
+  distanceMeters: number;
+  walkingTimeMin: number;
+  rating?: number;
+  specialtyOrType: string;
+  address: string;
+  phone?: string;
+  priceLevel?: string;
+  isOpenNow?: boolean;
+  timing?: string;
+  coordinates?: { lat: number; lng: number };
+}
 
 export interface ParkingSlot {
   id: string;
@@ -49,12 +73,13 @@ export interface ParkingHub {
   landmark: string;
   coordinates: { lat: number; lng: number };
   imageUrl?: string;
-  description?: string;
-  heritageDistance?: string;
+  ownerId?: string;
+  nearbyPlaces?: NearbyPlace[];
 }
 
 export interface Booking {
   id: string;
+  userId: string;
   hubId: string;
   hubName: string;
   slotCode: string;
@@ -68,6 +93,7 @@ export interface Booking {
   qrCodeValue: string;
   includeShuttlePass: boolean;
   entryGate: string;
+  createdAt?: string;
 }
 
 export interface NotificationItem {
@@ -79,19 +105,55 @@ export interface NotificationItem {
   unread: boolean;
 }
 
-export interface UserVehicle {
+export interface SavedVehicle {
   id: string;
+  userId: string;
   plateNumber: string;
-  type: VehicleType;
   nickname: string;
+  vehicleType: VehicleType;
   isDefault: boolean;
+  fastTagId?: string;
 }
 
 export interface UserAccount {
   id: string;
   name: string;
-  email: string;
   phone: string;
-  role: 'SEEKER' | 'OWNER' | 'ADMIN';
-  avatarUrl?: string;
+  email: string;
+  role: UserRole;
+  citizenBadge: string;
+  isLoggedIn: boolean;
+  vehicles: SavedVehicle[];
+  address?: string;
+  joinedDate?: string;
+}
+
+export interface KolhapurDestination {
+  id: string;
+  name: string;
+  marathiName: string;
+  tagline: string;
+  description: string;
+  imageUrl: string;
+  imageAlt: string;
+  associatedHubId: string;
+  walkingDistance: string;
+  openBays: number;
+  category: 'temple' | 'palace' | 'lake' | 'fort' | 'market' | 'museum' | 'nature' | 'heritage';
+  highlights: string[];
+}
+
+export interface OwnerFacility {
+  id: string;
+  ownerId: string;
+  name: string;
+  address: string;
+  hourlyRate: number;
+  totalSlots: number;
+  availableSlots: number;
+  status: 'ACTIVE' | 'MAINTENANCE' | 'OFFLINE';
+  cctvEnabled: boolean;
+  evCharging: boolean;
+  todayRevenue: number;
+  totalBookings: number;
 }

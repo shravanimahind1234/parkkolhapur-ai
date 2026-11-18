@@ -2,51 +2,41 @@
 
 @theme {
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-serif: 'Cinzel', Georgia, serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
   
-  /* Kolhapur Royal Palette */
-  --color-maroon: #651E2B;
-  --color-maroon-dark: #4A141F;
-  --color-maroon-light: #7E2837;
+  /* Kolhapur Inspired Palette */
+  --color-maroon: #7B2638;
+  --color-maroon-dark: #5e1c2a;
+  --color-maroon-light: #943247;
+  --color-maroon-subtle: #fbf2f4;
   
-  --color-burgundy: #3D101C;
-  --color-burgundy-dark: #22070E;
-  --color-burgundy-deep: #1A0A0F;
+  --color-ivory: #FFFDF8;
+  --color-cream: #F7F4EE;
+  --color-cream-alt: #EFECE4;
   
   --color-gold: #C6A15B;
-  --color-gold-light: #E0C07E;
-  --color-gold-dark: #A47F38;
-  
-  --color-ivory: #FFF9EF;
-  --color-ivory-dim: #E8DECE;
-  --color-ivory-muted: #B8ADA0;
+  --color-gold-dark: #a9833e;
+  --color-gold-light: #dfc288;
+  --color-gold-subtle: #fcf8ee;
   
   --color-charcoal: #292725;
-  --color-charcoal-dark: #1E1C1B;
-  --color-charcoal-light: #3D3A37;
+  --color-charcoal-muted: #5e5954;
+  --color-charcoal-subtle: #8a847e;
   
-  /* Parking Slot Status */
-  --color-slot-available: #10B981;
-  --color-slot-occupied: #EF4444;
-  --color-slot-reserved: #F59E0B;
+  --color-park-green: #26965B;
+  --color-park-green-subtle: #edf8f2;
+  --color-park-red: #D94B4B;
+  --color-park-red-subtle: #fdf0f0;
+  --color-park-amber: #E6A23C;
+  --color-park-amber-subtle: #fef7ec;
 }
 
 @layer base {
-  :root {
-    --bg-main: #1A0A0F;
-    --text-main: #FFF9EF;
-  }
-
   html, body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    background-color: #1A0A0F;
-    color: #FFF9EF;
+    background-color: #F7F4EE;
+    color: #292725;
     -webkit-tap-highlight-color: transparent;
-    scroll-behavior: smooth;
-  }
-
-  h1, h2, h3, .font-royal {
-    font-family: 'Cinzel', serif;
   }
 }
 
@@ -59,45 +49,16 @@
   scrollbar-width: none;
 }
 
-/* Kolhapur filigree and ornamental accents */
-.royal-border-gold {
-  border-image: linear-gradient(to right, transparent, #C6A15B, transparent) 1;
-}
-
-.gold-shimmer {
-  background: linear-gradient(90deg, #C6A15B 0%, #FFF9EF 50%, #C6A15B 100%);
-  background-size: 200% auto;
-  color: transparent;
-  -webkit-background-clip: text;
-  background-clip: text;
-  animation: shine 4s linear infinite;
-}
-
-@keyframes shine {
-  to {
-    background-position: 200% center;
-  }
-}
-
-.gold-gradient-bg {
-  background: linear-gradient(135deg, #C6A15B 0%, #A47F38 100%);
-}
-
-.maroon-gradient-bg {
-  background: linear-gradient(135deg, #651E2B 0%, #3D101C 100%);
-}
-
-.card-royal {
-  background: linear-gradient(180deg, rgba(61, 16, 28, 0.75) 0%, rgba(34, 7, 14, 0.9) 100%);
-  border: 1px solid rgba(198, 161, 91, 0.2);
+/* Kolhapur Royal Glass Effect */
+.kolhapur-glass {
+  background: rgba(255, 253, 248, 0.85);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(198, 161, 91, 0.2);
 }
 
-.card-royal-hover {
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.card-royal-hover:hover {
-  border-color: rgba(198, 161, 91, 0.45);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 30px -8px rgba(101, 30, 43, 0.4), 0 0 20px -4px rgba(198, 161, 91, 0.15);
+.kolhapur-card {
+  background-color: #FFFFFF;
+  border: 1px solid #EFECE4;
+  box-shadow: 0 4px 20px rgba(41, 39, 37, 0.05);
 }

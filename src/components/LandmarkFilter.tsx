@@ -1,15 +1,33 @@
 import React from 'react';
-import { Search, Mic, SlidersHorizontal, Sparkles } from 'lucide-react';
+import { Search, Mic, SlidersHorizontal, Landmark, Waves, Bus, Shield, Castle, ShoppingBag, X, TreePine, Trophy, Building2, Flame } from 'lucide-react';
 import { LANDMARKS } from '../data/mockData';
+import { useLanguage } from '../i18n/LanguageContext';
+
+const LANDMARK_NAMES_I18N: Record<string, { mr: string; hi: string }> = {
+  'all': { mr: 'सर्व कोल्हापूर', hi: 'सभी कोल्हापुर' },
+  'Mahalaxmi Temple': { mr: 'महालक्ष्मी मंदिर', hi: 'महालक्ष्मी मंदिर' },
+  'Jyotiba Temple': { mr: 'ज्योतिबा मंदिर', hi: 'ज्योतिबा मंदिर' },
+  'Rankala Lake': { mr: 'रंकाळा तलाव', hi: 'रंकाला झील' },
+  'New Palace': { mr: 'नवीन राजवाडा', hi: 'न्यू पैलेस' },
+  'Panhala Fort': { mr: 'पन्हाळा किल्ला', hi: 'पन्हाला किला' },
+  'Kaneri Math': { mr: 'कणेरी मठ (सिद्धगिरी)', hi: 'कणेरी मठ (सिद्धगिरी)' },
+  'Kopeshwar Temple': { mr: 'खिद्रापूर कोपेश्वर', hi: 'खिदरापुर कोपेश्वर' },
+  'Radhanagari Wildlife Sanctuary': { mr: 'राधानगरी व दाजीपूर', hi: 'राधानगरी व दाजीपुर' },
+  'Town Hall Museum': { mr: 'टाऊन हॉल संग्रहालय', hi: 'टाउन हॉल संग्रहालय' },
+  'Narsobachi Wadi': { mr: 'नृसिंहवाडी', hi: 'नृसिंहवाडी' },
+  'Khasbag Maidan': { mr: 'खासबाग मैदान', hi: 'खासबाग मैदान' },
+  'Bhavani Mandap': { mr: 'भवानी मंडप', hi: 'भवानी मंडप' },
+  'Central Bus Stand (CBS)': { mr: 'मध्यवर्ती बस स्थानक (CBS)', hi: 'सेंट्रल बस स्टैंड (CBS)' },
+};
 
 interface LandmarkFilterProps {
   searchQuery: string;
-  onSearchChange: (query: string) => void;
+  onSearchChange: (val: string) => void;
   selectedLandmark: string;
   onSelectLandmark: (landmark: string) => void;
   onOpenFilterDrawer: () => void;
   onVoiceSearch: () => void;
-  isListening: boolean;
+  isListening?: boolean;
 }
 
 export const LandmarkFilter: React.FC<LandmarkFilterProps> = ({
@@ -19,77 +37,120 @@ export const LandmarkFilter: React.FC<LandmarkFilterProps> = ({
   onSelectLandmark,
   onOpenFilterDrawer,
   onVoiceSearch,
-  isListening,
+  isListening = false,
 }) => {
+  const { t, language } = useLanguage();
+
+  const getIcon = (id: string) => {
+    switch (id) {
+      case 'Mahalaxmi Temple':
+        return <Landmark className="w-3.5 h-3.5 text-[#7B2638]" />;
+      case 'Jyotiba Temple':
+        return <Flame className="w-3.5 h-3.5 text-[#C6A15B]" />;
+      case 'Rankala Lake':
+        return <Waves className="w-3.5 h-3.5 text-[#26965B]" />;
+      case 'Central Bus Stand (CBS)':
+        return <Bus className="w-3.5 h-3.5 text-[#7B2638]" />;
+      case 'Bhavani Mandap':
+        return <Shield className="w-3.5 h-3.5 text-[#C6A15B]" />;
+      case 'New Palace':
+        return <Castle className="w-3.5 h-3.5 text-[#7B2638]" />;
+      case 'Panhala Fort':
+        return <Shield className="w-3.5 h-3.5 text-[#C6A15B]" />;
+      case 'Kaneri Math':
+        return <Building2 className="w-3.5 h-3.5 text-[#C6A15B]" />;
+      case 'Kopeshwar Temple':
+        return <Landmark className="w-3.5 h-3.5 text-[#C6A15B]" />;
+      case 'Radhanagari Wildlife Sanctuary':
+        return <TreePine className="w-3.5 h-3.5 text-[#26965B]" />;
+      case 'Town Hall Museum':
+        return <Building2 className="w-3.5 h-3.5 text-[#7B2638]" />;
+      case 'Narsobachi Wadi':
+        return <Waves className="w-3.5 h-3.5 text-[#26965B]" />;
+      case 'Khasbag Maidan':
+        return <Trophy className="w-3.5 h-3.5 text-[#7B2638]" />;
+      default:
+        return <Landmark className="w-3.5 h-3.5" />;
+    }
+  };
+
   return (
-    <div className="w-full bg-[#22070E]/80 backdrop-blur-md border-b border-[#C6A15B]/20 py-3.5 px-4 sm:px-6">
-      <div className="max-w-6xl mx-auto flex flex-col gap-3">
-        
-        {/* Search Row */}
-        <div className="flex items-center gap-2.5">
-          <div className="relative flex-1">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-              <Search className="w-4 h-4 text-[#C6A15B]" />
-            </div>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Search by landmark, temple gate, or Kolhapur street..."
-              className="w-full pl-10 pr-10 py-3 rounded-2xl bg-[#1A0A0F] border border-[#C6A15B]/30 text-xs sm:text-sm text-[#FFF9EF] placeholder-[#B8ADA0] focus:outline-none focus:border-[#C6A15B] focus:ring-1 focus:ring-[#C6A15B] transition-all shadow-inner"
-            />
-            {/* Voice Search Button */}
+    <section className="px-4 py-3 bg-[#FFFDF8] border-b border-[#EFECE4] shadow-xs">
+      {/* Search Bar */}
+      <div className="relative w-full max-w-2xl mx-auto">
+        <div className="flex items-center h-12 rounded-2xl bg-[#FFFFFF] px-3 shadow-sm border border-[#EFECE4] focus-within:border-[#7B2638] transition-colors">
+          <Search className="w-4 h-4 text-[#7B2638] mr-2 flex-shrink-0" />
+          <input
+            id="search-input"
+            type="text"
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            placeholder={t.searchFilter.searchPlaceholder}
+            className="w-full bg-transparent text-[13px] text-[#292725] placeholder-[#8a847e] focus:outline-none"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => onSearchChange('')}
+              className="text-xs text-[#8a847e] hover:text-[#292725] p-1 cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+
+          <div className="flex items-center gap-1 border-l border-[#EFECE4] pl-2 ml-1">
             <button
               type="button"
               onClick={onVoiceSearch}
-              title="Voice Search"
-              className={`absolute right-2 top-2 w-8 h-8 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
+              title={language === 'mr' ? 'आवाज शोध' : language === 'hi' ? 'वॉइस सर्च' : 'Voice Search'}
+              className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
                 isListening
-                  ? 'bg-[#EF4444] text-white animate-pulse'
-                  : 'bg-[#3D101C] text-[#C6A15B] hover:bg-[#651E2B]'
+                  ? 'bg-[#7B2638] text-[#FFFDF8] animate-bounce'
+                  : 'text-[#5e5954] hover:text-[#7B2638] hover:bg-[#F7F4EE]'
               }`}
             >
               <Mic className="w-4 h-4" />
             </button>
+
+            <button
+              type="button"
+              onClick={onOpenFilterDrawer}
+              title={language === 'mr' ? 'फिल्टर पर्याय' : language === 'hi' ? 'फ़िल्टर विकल्प' : 'Filter Options'}
+              className="w-8 h-8 rounded-xl flex items-center justify-center text-[#5e5954] hover:text-[#7B2638] hover:bg-[#F7F4EE] transition-all cursor-pointer"
+            >
+              <SlidersHorizontal className="w-4 h-4" />
+            </button>
           </div>
-
-          {/* Filter Drawer Toggle */}
-          <button
-            type="button"
-            onClick={onOpenFilterDrawer}
-            title="Filter Criteria"
-            className="h-11 px-3.5 rounded-2xl bg-[#3D101C] hover:bg-[#651E2B] border border-[#C6A15B]/30 text-[#FFF9EF] flex items-center gap-2 text-xs font-bold transition-all cursor-pointer shadow-sm flex-shrink-0"
-          >
-            <SlidersHorizontal className="w-4 h-4 text-[#C6A15B]" />
-            <span className="hidden sm:inline">Filters</span>
-          </button>
         </div>
-
-        {/* Horizontal Landmark Chips */}
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
-          <span className="text-[11px] uppercase tracking-wider font-extrabold text-[#C6A15B] whitespace-nowrap pl-0.5">
-            Destinations:
-          </span>
-          {LANDMARKS.map((lm) => {
-            const isSelected = selectedLandmark === lm.name || (lm.id === 'all' && selectedLandmark === 'all');
-            return (
-              <button
-                key={lm.id}
-                type="button"
-                onClick={() => onSelectLandmark(lm.name === 'All Kolhapur' ? 'all' : lm.name)}
-                className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer border ${
-                  isSelected
-                    ? 'bg-[#C6A15B] text-[#22070E] border-[#C6A15B] shadow-md font-extrabold scale-[1.02]'
-                    : 'bg-[#1A0A0F] text-[#E8DECE] border-white/10 hover:border-[#C6A15B]/40 hover:text-[#FFF9EF]'
-                }`}
-              >
-                {lm.name}
-              </button>
-            );
-          })}
-        </div>
-
       </div>
-    </div>
+
+      {/* Kolhapur Landmark Chips */}
+      <div className="flex items-center gap-2 overflow-x-auto pt-2.5 pb-0.5 no-scrollbar max-w-2xl mx-auto">
+        {LANDMARKS.map((item) => {
+          const isSelected = selectedLandmark === item.id;
+          const displayName =
+            language === 'mr'
+              ? LANDMARK_NAMES_I18N[item.id]?.mr || item.name
+              : language === 'hi'
+              ? LANDMARK_NAMES_I18N[item.id]?.hi || item.name
+              : item.name;
+
+          return (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => onSelectLandmark(item.id)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold whitespace-nowrap transition-all cursor-pointer border ${
+                isSelected
+                  ? 'bg-[#7B2638] text-[#FFFDF8] border-[#7B2638] shadow-xs'
+                  : 'bg-[#FFFFFF] text-[#5e5954] hover:text-[#292725] border-[#EFECE4] hover:bg-[#F7F4EE]'
+              }`}
+            >
+              {getIcon(item.id)}
+              <span>{displayName}</span>
+            </button>
+          );
+        })}
+      </div>
+    </section>
   );
 };

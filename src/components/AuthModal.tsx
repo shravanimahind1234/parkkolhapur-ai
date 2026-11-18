@@ -1,359 +1,375 @@
 import React, { useState } from 'react';
 import {
   X,
+  ShieldCheck,
+  Phone,
   Mail,
   Lock,
   User,
-  Phone,
+  CheckCircle2,
   Car,
-  ShieldCheck,
-  CheckCircle,
-  Eye,
-  EyeOff,
   Sparkles,
-  ArrowRight,
-  ParkingCircle,
+  Building2,
+  ShieldAlert,
+  KeyRound,
 } from 'lucide-react';
-import { UserAccount } from '../types';
+import { UserAccount, UserRole } from '../types';
+import { signUpWithEmail, signInWithEmail } from '../lib/supabase';
+import { DEMO_ACCOUNTS, ADMIN_CREDENTIALS } from '../data/mockData';
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
+  currentUser: UserAccount;
   onLoginSuccess: (user: UserAccount) => void;
   initialMode?: 'signin' | 'signup';
+  actionPromptMessage?: string | null;
 }
 
 export const AuthModal: React.FC<AuthModalProps> = ({
   isOpen,
   onClose,
+  currentUser,
   onLoginSuccess,
   initialMode = 'signin',
+  actionPromptMessage = null,
 }) => {
   const [mode, setMode] = useState<'signin' | 'signup'>(initialMode);
-  const [selectedRole, setSelectedRole] = useState<'SEEKER' | 'OWNER' | 'ADMIN'>('SEEKER');
-  const [showPassword, setShowPassword] = useState(false);
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
+  const [selectedRole, setSelectedRole] = useState<UserRole>('CUSTOMER');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
-  const [vehicleNumber, setVehicleNumber] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMsg, setSuccessMsg] = useState('');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMsg('');
+    setErrorMessage(null);
+    setLoading(true);
 
-    if (!email || !password) {
-      setErrorMsg('Please provide both email and password.');
-      return;
-    }
-
-    if (mode === 'signup' && !fullName) {
-      setErrorMsg('Please enter your full name.');
-      return;
-    }
-
-    setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSuccessMsg(
-        mode === 'signin'
-          ? `Welcome back to ParkKolhapur, ${fullName || 'Citizen'}!`
-          : `Account successfully created as ${selectedRole}!`
+    if (mode === 'signup') {
+      const { user, error } = await signUpWithEmail(
+        identifier.trim(),
+        password || 'Kolhapur@123',
+        name.trim() || 'Kolhapur Citizen',
+        phone.trim() || '+91 98220 00000',
+        selectedRole
       );
 
-      const loggedUser: UserAccount = {
-        id: `usr-${Date.now()}`,
-        name: fullName || (email.split('@')[0].toUpperCase()),
-        email: email,
-        phone: phone || '+91 98220 12345',
-        role: selectedRole,
-        avatarUrl:
-          selectedRole === 'ADMIN'
-            ? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80'
-            : selectedRole === 'OWNER'
-            ? 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=256&q=80'
-            : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80',
-      };
-
-      setTimeout(() => {
-        onLoginSuccess(loggedUser);
-        onClose();
-      }, 1000);
-    }, 800);
+      setLoading(false);
+      if (error) {
+        setErrorMessage(error);
+        return;
+      }
+      if (user) {
+        setIsSuccess(true);
+        setTimeout(() => {
+          onLoginSuccess(user);
+          setIsSuccess(false);
+          onClose();
+        }, 800);
+      }
+    } else {
+      const { user, error } = await signInWithEmail(identifier.trim(), password);
+      setLoading(false);
+      if (error) {
+        setErrorMessage(error);
+        return;
+      }
+      if (user) {
+        setIsSuccess(true);
+        setTimeout(() => {
+          onLoginSuccess(user);
+          setIsSuccess(false);
+          onClose();
+        }, 800);
+      }
+    }
   };
 
-  const handleQuickDemoLogin = (role: 'SEEKER' | 'OWNER' | 'ADMIN') => {
-    const demos: Record<string, UserAccount> = {
-      SEEKER: {
-        id: 'usr-demo-seeker',
-        name: 'Shravani Mahind (Pilgrim)',
-        email: 'shravani@kolhapur.citizen',
-        phone: '+91 98220 12345',
-        role: 'SEEKER',
-        avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80',
-      },
-      OWNER: {
-        id: 'usr-demo-owner',
-        name: 'Rajendra Patil (Lot Host)',
-        email: 'rajendra.patil@kolhapur.lots',
-        phone: '+91 94220 54321',
-        role: 'OWNER',
-        avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=256&q=80',
-      },
-      ADMIN: {
-        id: 'usr-demo-admin',
-        name: 'KMC Smart City Officer',
-        email: 'admin.mobility@kolhapurcorporation.gov.in',
-        phone: '+91 231 254 0000',
-        role: 'ADMIN',
-        avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80',
-      },
-    };
+  const handleQuickAdminLogin = () => {
+    setIdentifier('parkadmin');
+    setPassword('parkadmin');
+    const adminAcc = DEMO_ACCOUNTS.find((a) => a.role === 'ADMIN');
+    if (adminAcc) {
+      setIsSuccess(true);
+      setTimeout(() => {
+        onLoginSuccess(adminAcc);
+        setIsSuccess(false);
+        onClose();
+      }, 700);
+    }
+  };
 
-    const user = demos[role];
-    setSuccessMsg(`Authenticated as ${user.name}`);
+  const handleQuickDemoSwitch = (demoUser: UserAccount) => {
+    setIsSuccess(true);
     setTimeout(() => {
-      onLoginSuccess(user);
+      onLoginSuccess(demoUser);
+      setIsSuccess(false);
       onClose();
-    }, 700);
+    }, 600);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-200">
-      <div className="w-full max-w-md rounded-3xl bg-gradient-to-b from-[#3D101C] via-[#22070E] to-[#1A0A0F] border border-[#C6A15B]/35 shadow-2xl overflow-hidden flex flex-col text-[#FFF9EF]">
-        
-        {/* Header Strip */}
-        <div className="p-5 border-b border-white/10 flex items-center justify-between bg-[#22070E]">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl gold-gradient-bg flex items-center justify-center text-[#22070E] font-black font-royal text-sm shadow">
-              K
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+      <div className="w-full max-w-md bg-[#FFFDF8] rounded-3xl border border-[#C6A15B]/30 shadow-2xl overflow-hidden p-6 relative text-left">
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          type="button"
+          aria-label="Close"
+          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-[#F7F4EE] hover:bg-[#EFECE4] text-[#5e5954] flex items-center justify-center transition-colors cursor-pointer"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        {isSuccess ? (
+          <div className="py-8 flex flex-col items-center justify-center text-center gap-3">
+            <div className="w-16 h-16 rounded-full bg-[#edf8f2] text-[#26965B] flex items-center justify-center animate-bounce shadow-sm">
+              <CheckCircle2 className="w-10 h-10" />
             </div>
-            <div>
-              <h3 className="font-royal text-base font-bold text-[#FFF9EF] leading-none">
-                {mode === 'signin' ? 'Sign In to ParkKolhapur' : 'Create Citizen Account'}
-              </h3>
-              <span className="text-[11px] text-[#C6A15B] font-medium">
-                Kolhapur Municipal Smart Mobility
-              </span>
-            </div>
+            <h3 className="text-[20px] font-bold text-[#7B2638] font-serif">
+              Authentication Verified
+            </h3>
+            <p className="text-[13px] text-[#5e5954]">
+              Redirecting to your isolated personalized dashboard...
+            </p>
           </div>
-
-          <button
-            onClick={onClose}
-            type="button"
-            className="w-8 h-8 rounded-full bg-[#1A0A0F] text-[#B8ADA0] hover:text-[#FFF9EF] flex items-center justify-center transition-colors cursor-pointer"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-
-        {/* Mode Toggle Tabs */}
-        <div className="grid grid-cols-2 p-1.5 m-5 mb-3 rounded-2xl bg-[#1A0A0F] border border-[#C6A15B]/20">
-          <button
-            type="button"
-            onClick={() => { setMode('signin'); setErrorMsg(''); }}
-            className={`py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
-              mode === 'signin'
-                ? 'bg-[#651E2B] text-[#FFF9EF] shadow-md border border-[#C6A15B]/40'
-                : 'text-[#B8ADA0] hover:text-[#FFF9EF]'
-            }`}
-          >
-            Citizen Sign In
-          </button>
-          <button
-            type="button"
-            onClick={() => { setMode('signup'); setErrorMsg(''); }}
-            className={`py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
-              mode === 'signup'
-                ? 'bg-[#651E2B] text-[#FFF9EF] shadow-md border border-[#C6A15B]/40'
-                : 'text-[#B8ADA0] hover:text-[#FFF9EF]'
-            }`}
-          >
-            New Registration
-          </button>
-        </div>
-
-        {/* Role Selector Pill */}
-        <div className="px-5 mb-4">
-          <label className="text-[11px] uppercase tracking-wider font-bold text-[#C6A15B] block mb-2">
-            Select Your Municipal Role:
-          </label>
-          <div className="grid grid-cols-3 gap-2">
-            {[
-              { id: 'SEEKER', label: 'Pilgrim / Seeker', icon: User },
-              { id: 'OWNER', label: 'Private Lot Host', icon: ParkingCircle },
-              { id: 'ADMIN', label: 'KMC Officer', icon: ShieldCheck },
-            ].map((r) => {
-              const Icon = r.icon;
-              const isSelected = selectedRole === r.id;
-              return (
-                <button
-                  key={r.id}
-                  type="button"
-                  onClick={() => setSelectedRole(r.id as any)}
-                  className={`p-2.5 rounded-xl border flex flex-col items-center justify-center gap-1 text-center transition-all cursor-pointer ${
-                    isSelected
-                      ? 'bg-[#651E2B] border-[#C6A15B] text-[#FFF9EF] shadow'
-                      : 'bg-[#1A0A0F]/60 border-white/5 text-[#B8ADA0] hover:border-white/20'
-                  }`}
-                >
-                  <Icon className={`w-4 h-4 ${isSelected ? 'text-[#C6A15B]' : ''}`} />
-                  <span className="text-[10px] font-bold leading-tight">{r.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Form Body */}
-        <form onSubmit={handleSubmit} className="px-5 pb-5 space-y-3.5">
-          {errorMsg && (
-            <div className="p-3 rounded-xl bg-[#EF4444]/20 border border-[#EF4444]/40 text-[#EF4444] text-xs font-semibold">
-              {errorMsg}
-            </div>
-          )}
-
-          {successMsg && (
-            <div className="p-3 rounded-xl bg-[#10B981]/20 border border-[#10B981]/40 text-[#10B981] text-xs font-semibold flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 flex-shrink-0" />
-              <span>{successMsg}</span>
-            </div>
-          )}
-
-          {mode === 'signup' && (
-            <>
+        ) : (
+          <div className="space-y-4">
+            {/* Header */}
+            <div className="flex items-center gap-3 border-b border-[#EFECE4] pb-3">
+              <div className="w-12 h-12 rounded-2xl bg-[#7B2638] text-[#FFFDF8] flex items-center justify-center font-serif text-2xl font-black shadow-md">
+                क
+              </div>
               <div>
-                <label className="text-xs font-semibold text-[#E8DECE] block mb-1">Full Name</label>
-                <div className="relative">
-                  <User className="w-4 h-4 text-[#C6A15B] absolute left-3 top-3.5" />
+                <div className="flex items-center gap-1.5">
+                  <h2 className="text-[19px] font-extrabold text-[#7B2638] font-serif tracking-tight">
+                    ParkKolhapur AI
+                  </h2>
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#C6A15B]/20 text-[#7B2638] uppercase tracking-wider">
+                    KMC
+                  </span>
+                </div>
+                <p className="text-[12px] text-[#5e5954]">
+                  {mode === 'signin' ? 'Sign in required to perform parking actions' : 'Create an isolated citizen or owner account'}
+                </p>
+              </div>
+            </div>
+
+            {/* Action Prompt Banner if user tried an unauthenticated action */}
+            {actionPromptMessage && (
+              <div className="p-3 rounded-2xl bg-[#fef7ec] border border-[#E6A23C]/40 text-[12px] text-[#7B2638] flex items-center gap-2">
+                <Lock className="w-4 h-4 text-[#E6A23C] flex-shrink-0" />
+                <span className="font-semibold leading-tight">{actionPromptMessage}</span>
+              </div>
+            )}
+
+            {/* Quick Admin Credentials Callout Badge */}
+            <div className="p-3.5 rounded-2xl bg-gradient-to-r from-[#7B2638]/10 via-[#FFFDF8] to-[#C6A15B]/15 border border-[#7B2638]/20 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-[#7B2638] text-white flex items-center justify-center flex-shrink-0">
+                  <ShieldAlert className="w-4 h-4 text-[#C6A15B]" />
+                </div>
+                <div>
+                  <span className="text-[11px] font-black text-[#7B2638] block leading-tight">
+                    Official KMC Admin Credentials
+                  </span>
+                  <span className="text-[10px] font-mono text-[#5e5954]">
+                    User: <strong>parkadmin</strong> • Pass: <strong>parkadmin</strong>
+                  </span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleQuickAdminLogin}
+                className="h-8 px-2.5 rounded-xl bg-[#7B2638] hover:bg-[#5e1c2a] text-[#FFFDF8] text-[11px] font-bold transition-all shadow-xs cursor-pointer flex-shrink-0"
+              >
+                1-Click Admin
+              </button>
+            </div>
+
+            {/* Quick Persona Switcher */}
+            <div className="space-y-1.5">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#5e5954] block">
+                Or Sign In As Demo Persona:
+              </span>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleQuickDemoSwitch(DEMO_ACCOUNTS[1])}
+                  className="p-2 rounded-xl bg-[#F7F4EE] hover:bg-[#edf8f2] border border-[#EFECE4] text-[11px] font-bold text-[#292725] text-left transition-all cursor-pointer"
+                >
+                  <span className="text-[#26965B] block font-extrabold">Ajay Shinde</span>
+                  <span className="text-[9px] text-[#8a847e] font-normal block">Citizen Customer</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleQuickDemoSwitch(DEMO_ACCOUNTS[2])}
+                  className="p-2 rounded-xl bg-[#F7F4EE] hover:bg-[#fef7ec] border border-[#EFECE4] text-[11px] font-bold text-[#292725] text-left transition-all cursor-pointer"
+                >
+                  <span className="text-[#C6A15B] block font-extrabold">Rajesh Patil</span>
+                  <span className="text-[9px] text-[#8a847e] font-normal block">Slot Owner / Host</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Mode Switcher Tabs */}
+            <div className="grid grid-cols-2 p-1 rounded-xl bg-[#F7F4EE] border border-[#EFECE4]">
+              <button
+                type="button"
+                onClick={() => setMode('signin')}
+                className={`py-2 text-[13px] font-bold rounded-lg transition-all cursor-pointer ${
+                  mode === 'signin'
+                    ? 'bg-[#7B2638] text-[#FFFDF8] shadow-sm'
+                    : 'text-[#5e5954] hover:text-[#292725]'
+                }`}
+              >
+                Sign In
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode('signup')}
+                className={`py-2 text-[13px] font-bold rounded-lg transition-all cursor-pointer ${
+                  mode === 'signup'
+                    ? 'bg-[#7B2638] text-[#FFFDF8] shadow-sm'
+                    : 'text-[#5e5954] hover:text-[#292725]'
+                }`}
+              >
+                Register
+              </button>
+            </div>
+
+            {errorMessage && (
+              <div className="p-2.5 rounded-xl bg-[#fdf0f0] border border-[#D94B4B]/30 text-[12px] text-[#D94B4B]">
+                {errorMessage}
+              </div>
+            )}
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-3">
+              {mode === 'signup' && (
+                <>
+                  <div>
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#5e5954] block mb-1">
+                      Account Type
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedRole('CUSTOMER')}
+                        className={`py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+                          selectedRole === 'CUSTOMER'
+                            ? 'bg-[#7B2638] text-[#FFFDF8] border-[#7B2638]'
+                            : 'bg-white text-[#5e5954] border-[#EFECE4]'
+                        }`}
+                      >
+                        Citizen Customer
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedRole('OWNER')}
+                        className={`py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+                          selectedRole === 'OWNER'
+                            ? 'bg-[#7B2638] text-[#FFFDF8] border-[#7B2638]'
+                            : 'bg-white text-[#5e5954] border-[#EFECE4]'
+                        }`}
+                      >
+                        Parking Lot Owner
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#5e5954] block mb-1">
+                      Full Name
+                    </label>
+                    <div className="flex items-center h-10 px-3 rounded-xl bg-[#FFFFFF] border border-[#EFECE4] focus-within:border-[#7B2638]">
+                      <User className="w-4 h-4 text-[#C6A15B] mr-2" />
+                      <input
+                        type="text"
+                        required
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="e.g. Anand Jadhav"
+                        className="w-full bg-transparent text-[13px] text-[#292725] focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[#5e5954] block mb-1">
+                      Phone Number
+                    </label>
+                    <div className="flex items-center h-10 px-3 rounded-xl bg-[#FFFFFF] border border-[#EFECE4] focus-within:border-[#7B2638]">
+                      <Phone className="w-4 h-4 text-[#C6A15B] mr-2" />
+                      <input
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="+91 98224 XXXXX"
+                        className="w-full bg-transparent text-[13px] text-[#292725] focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+
+              <div>
+                <label className="text-[10px] font-bold uppercase tracking-wider text-[#5e5954] block mb-1">
+                  Username or Email
+                </label>
+                <div className="flex items-center h-10 px-3 rounded-xl bg-[#FFFFFF] border border-[#EFECE4] focus-within:border-[#7B2638]">
+                  <Mail className="w-4 h-4 text-[#C6A15B] mr-2" />
                   <input
                     type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder="e.g. Shravani Mahind"
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-[#1A0A0F] border border-white/10 text-xs text-[#FFF9EF] focus:outline-none focus:border-[#C6A15B]"
+                    required
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
+                    placeholder="Username (e.g. parkadmin) or Email"
+                    className="w-full bg-transparent text-[13px] text-[#292725] focus:outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-[#E8DECE] block mb-1">Mobile Number</label>
-                <div className="relative">
-                  <Phone className="w-4 h-4 text-[#C6A15B] absolute left-3 top-3.5" />
+                <label className="text-[10px] font-bold uppercase tracking-wider text-[#5e5954] block mb-1">
+                  Password
+                </label>
+                <div className="flex items-center h-10 px-3 rounded-xl bg-[#FFFFFF] border border-[#EFECE4] focus-within:border-[#7B2638]">
+                  <Lock className="w-4 h-4 text-[#C6A15B] mr-2" />
                   <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+91 98220 12345"
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-[#1A0A0F] border border-white/10 text-xs text-[#FFF9EF] focus:outline-none focus:border-[#C6A15B]"
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter password (e.g. parkadmin)"
+                    className="w-full bg-transparent text-[13px] text-[#292725] focus:outline-none"
                   />
                 </div>
               </div>
-            </>
-          )}
 
-          <div>
-            <label className="text-xs font-semibold text-[#E8DECE] block mb-1">Email Address</label>
-            <div className="relative">
-              <Mail className="w-4 h-4 text-[#C6A15B] absolute left-3 top-3.5" />
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="citizen@kolhapur.gov.in"
-                className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-[#1A0A0F] border border-white/10 text-xs text-[#FFF9EF] focus:outline-none focus:border-[#C6A15B]"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="text-xs font-semibold text-[#E8DECE] block mb-1">Password</label>
-            <div className="relative">
-              <Lock className="w-4 h-4 text-[#C6A15B] absolute left-3 top-3.5" />
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••••••"
-                className="w-full pl-9 pr-10 py-2.5 rounded-xl bg-[#1A0A0F] border border-white/10 text-xs text-[#FFF9EF] focus:outline-none focus:border-[#C6A15B]"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-[#B8ADA0] hover:text-[#FFF9EF]"
-              >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
-          </div>
-
-          {mode === 'signup' && selectedRole === 'SEEKER' && (
-            <div>
-              <label className="text-xs font-semibold text-[#E8DECE] block mb-1">Primary Vehicle Plate (Optional)</label>
-              <div className="relative">
-                <Car className="w-4 h-4 text-[#C6A15B] absolute left-3 top-3.5" />
-                <input
-                  type="text"
-                  value={vehicleNumber}
-                  onChange={(e) => setVehicleNumber(e.target.value.toUpperCase())}
-                  placeholder="e.g. MH 09 DX 4521"
-                  className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-[#1A0A0F] border border-white/10 text-xs text-[#FFF9EF] focus:outline-none focus:border-[#C6A15B]"
-                />
+              <div className="p-2 rounded-xl bg-[#edf8f2] border border-[#26965B]/20 flex items-center gap-2 text-[11px] text-[#292725]">
+                <ShieldCheck className="w-4 h-4 text-[#26965B] flex-shrink-0" />
+                <span>Strict Supabase RLS isolation: users cannot see other users' details.</span>
               </div>
-            </div>
-          )}
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full py-3 rounded-xl gold-gradient-bg text-[#22070E] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg hover:brightness-105 active:scale-[0.99] transition-all cursor-pointer mt-4"
-          >
-            {isSubmitting ? (
-              <span>Authenticating...</span>
-            ) : (
-              <>
-                <span>{mode === 'signin' ? 'Sign In & Access Passes' : 'Complete Registration'}</span>
-                <ArrowRight className="w-4 h-4" />
-              </>
-            )}
-          </button>
-
-          {/* Quick Demo Credentials */}
-          <div className="pt-3 border-t border-white/10">
-            <span className="text-[10px] uppercase font-bold text-[#C6A15B] block text-center mb-2">
-              Instant 1-Click Demo Login
-            </span>
-            <div className="grid grid-cols-3 gap-1.5">
               <button
-                type="button"
-                onClick={() => handleQuickDemoLogin('SEEKER')}
-                className="py-1.5 px-2 rounded-lg bg-[#292725] hover:bg-[#3D3A37] text-[10px] font-bold text-[#FFF9EF] border border-white/5 transition-colors cursor-pointer truncate"
+                type="submit"
+                disabled={loading}
+                className="w-full h-11 rounded-xl bg-[#7B2638] hover:bg-[#5e1c2a] text-[#FFFDF8] font-bold text-[13px] flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
               >
-                Demo Pilgrim
+                <span>{loading ? 'Authenticating...' : mode === 'signin' ? 'Sign In' : 'Create Account'}</span>
               </button>
-              <button
-                type="button"
-                onClick={() => handleQuickDemoLogin('OWNER')}
-                className="py-1.5 px-2 rounded-lg bg-[#292725] hover:bg-[#3D3A37] text-[10px] font-bold text-[#FFF9EF] border border-white/5 transition-colors cursor-pointer truncate"
-              >
-                Demo Host
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickDemoLogin('ADMIN')}
-                className="py-1.5 px-2 rounded-lg bg-[#292725] hover:bg-[#3D3A37] text-[10px] font-bold text-[#FFF9EF] border border-white/5 transition-colors cursor-pointer truncate"
-              >
-                Demo KMC
-              </button>
-            </div>
+            </form>
           </div>
-        </form>
-
+        )}
       </div>
     </div>
   );

@@ -1,48 +1,113 @@
 import React from 'react';
-import { Car, Bike, Zap } from 'lucide-react';
+import { Bike, Car, Zap } from 'lucide-react';
 import { VehicleType } from '../types';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface VehicleSelectorProps {
   selectedVehicle: VehicleType;
-  onSelectVehicle: (vehicle: VehicleType) => void;
+  onSelectVehicle: (type: VehicleType) => void;
 }
 
 export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
   selectedVehicle,
   onSelectVehicle,
 }) => {
-  const options: { id: VehicleType; label: string; desc: string; icon: React.ElementType }[] = [
-    { id: 'car', label: 'Four Wheeler / Car', desc: 'Standard & SUV bays', icon: Car },
-    { id: 'bike', label: 'Two Wheeler / Bike', desc: 'Covered scooter bays', icon: Bike },
-    { id: 'ev', label: 'Electric EV Charging', desc: '60kW DC Fast Hubs', icon: Zap },
-  ];
+  const { t, language } = useLanguage();
 
   return (
-    <div className="w-full">
-      <div className="grid grid-cols-3 gap-2.5 p-1.5 rounded-2xl bg-[#22070E] border border-[#C6A15B]/30 shadow-md">
-        {options.map((opt) => {
-          const Icon = opt.icon;
-          const isSelected = selectedVehicle === opt.id;
-          return (
-            <button
-              key={opt.id}
-              type="button"
-              onClick={() => onSelectVehicle(opt.id)}
-              className={`p-3 rounded-xl flex flex-col items-center justify-center text-center transition-all cursor-pointer border ${
-                isSelected
-                  ? 'bg-gradient-to-b from-[#651E2B] to-[#3D101C] text-[#FFF9EF] border-[#C6A15B] shadow-lg shadow-[#651E2B]/40 scale-[1.02]'
-                  : 'bg-[#1A0A0F]/60 text-[#B8ADA0] border-transparent hover:border-white/10 hover:text-[#FFF9EF]'
-              }`}
-            >
-              <Icon className={`w-5 h-5 mb-1 ${isSelected ? 'text-[#C6A15B]' : ''}`} />
-              <span className="text-xs font-bold leading-tight">{opt.label}</span>
-              <span className="hidden sm:inline text-[10px] text-[#C6A15B]/80 mt-0.5 font-medium">
-                {opt.desc}
-              </span>
-            </button>
-          );
-        })}
+    <section className="flex flex-col gap-1.5 text-left">
+      <div className="flex items-center justify-between">
+        <span className="text-[11px] font-bold text-[#5e5954] uppercase tracking-wider">
+          {language === 'mr' ? 'वाहन प्रकार निवडा' : language === 'hi' ? 'वाहन प्रकार चुनें' : 'Select Vehicle Category'}
+        </span>
+        <span className="text-[10px] font-bold text-[#26965B] flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#26965B] animate-ping"></span>
+          {language === 'mr' ? 'थेट दर लागू' : language === 'hi' ? 'लाइव दर सक्रिय' : 'Live Rates Active'}
+        </span>
       </div>
-    </div>
+
+      <div className="grid grid-cols-3 gap-2 p-1 rounded-2xl bg-[#FFFFFF] shadow-xs border border-[#EFECE4]">
+        {/* 2-Wheeler */}
+        <button
+          type="button"
+          onClick={() => onSelectVehicle('bike')}
+          className={`flex flex-col items-center justify-center py-2.5 px-2 rounded-xl transition-all cursor-pointer ${
+            selectedVehicle === 'bike'
+              ? 'bg-[#7B2638] text-[#FFFDF8] shadow-sm font-bold'
+              : 'bg-[#F7F4EE] text-[#5e5954] hover:bg-[#EFECE4]'
+          }`}
+        >
+          <Bike
+            className={`w-5 h-5 mb-1 ${
+              selectedVehicle === 'bike' ? 'text-[#C6A15B]' : 'text-[#7B2638]'
+            }`}
+          />
+          <span className="text-[12px] font-bold">{t.vehicle.twoWheeler}</span>
+          <span
+            className={`text-[10px] ${
+              selectedVehicle === 'bike'
+                ? 'text-[#FFFDF8]/80 font-medium'
+                : 'text-[#8a847e]'
+            }`}
+          >
+            {t.vehicle.twoWheelerSub}
+          </span>
+        </button>
+
+        {/* 4-Wheeler */}
+        <button
+          type="button"
+          onClick={() => onSelectVehicle('car')}
+          className={`flex flex-col items-center justify-center py-2.5 px-2 rounded-xl transition-all cursor-pointer ${
+            selectedVehicle === 'car'
+              ? 'bg-[#7B2638] text-[#FFFDF8] shadow-sm font-bold'
+              : 'bg-[#F7F4EE] text-[#5e5954] hover:bg-[#EFECE4]'
+          }`}
+        >
+          <Car
+            className={`w-5 h-5 mb-1 ${
+              selectedVehicle === 'car' ? 'text-[#C6A15B]' : 'text-[#7B2638]'
+            }`}
+          />
+          <span className="text-[12px] font-bold">{t.vehicle.fourWheeler}</span>
+          <span
+            className={`text-[10px] ${
+              selectedVehicle === 'car'
+                ? 'text-[#FFFDF8]/80 font-medium'
+                : 'text-[#8a847e]'
+            }`}
+          >
+            {t.vehicle.fourWheelerSub}
+          </span>
+        </button>
+
+        {/* EV Station */}
+        <button
+          type="button"
+          onClick={() => onSelectVehicle('ev')}
+          className={`flex flex-col items-center justify-center py-2.5 px-2 rounded-xl transition-all cursor-pointer ${
+            selectedVehicle === 'ev'
+              ? 'bg-[#7B2638] text-[#FFFDF8] shadow-sm font-bold'
+              : 'bg-[#F7F4EE] text-[#5e5954] hover:bg-[#EFECE4]'
+          }`}
+        >
+          <Zap
+            className={`w-5 h-5 mb-1 ${
+              selectedVehicle === 'ev' ? 'text-[#C6A15B]' : 'text-[#26965B]'
+            }`}
+          />
+          <span className="text-[12px] font-bold">{t.vehicle.ev}</span>
+          <span
+            className={`text-[10px] ${
+              selectedVehicle === 'ev'
+                ? 'text-[#FFFDF8]/80 font-medium'
+                : 'text-[#8a847e]'
+            }`}
+          >
+            {t.vehicle.evSub}
+          </span>
+        </button>
+      </div>
+    </section>
   );
 };

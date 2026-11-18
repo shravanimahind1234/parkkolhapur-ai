@@ -3,190 +3,181 @@ import {
   Bell,
   Compass,
   MapPin,
-  Car,
   Ticket,
-  Bus,
+  Car,
   ShieldCheck,
-  User,
+  Building2,
   Sparkles,
-  Menu,
-  X,
-  LogIn,
+  User,
+  LayoutDashboard,
+  ShieldAlert,
 } from 'lucide-react';
 import { UserAccount } from '../types';
+import { useLanguage } from '../i18n/LanguageContext';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 interface HeaderProps {
   currentRole: 'SEEKER' | 'OWNER' | 'ADMIN';
-  activeTab: string;
-  onNavigateTab: (tab: any) => void;
   onRoleClick: () => void;
   onNotificationsClick: () => void;
   unreadNotificationsCount: number;
   onProfileClick: () => void;
-  onOpenMap: () => void;
-  onOpenShuttle: () => void;
+  activeNavTab: string;
+  onNavTabChange: (tab: string) => void;
+  currentUser: UserAccount;
+  onAuthClick: () => void;
   onOpenVehicles: () => void;
-  onOpenAuth: () => void;
-  currentUser: UserAccount | null;
-  activeBookingsCount: number;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   currentRole,
-  activeTab,
-  onNavigateTab,
   onRoleClick,
   onNotificationsClick,
   unreadNotificationsCount,
   onProfileClick,
-  onOpenMap,
-  onOpenShuttle,
-  onOpenVehicles,
-  onOpenAuth,
+  activeNavTab,
+  onNavTabChange,
   currentUser,
-  activeBookingsCount,
+  onAuthClick,
+  onOpenVehicles,
 }) => {
-  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const { t } = useLanguage();
 
   return (
-    <header className="fixed top-0 inset-x-0 z-40 bg-[#1A0A0F]/90 backdrop-blur-xl border-b border-[#C6A15B]/25 shadow-[0_4px_30px_rgba(34,7,14,0.6)]">
-      <div className="max-w-7xl mx-auto h-20 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
-        
-        {/* Left: Brand logo & KMC Royal Badge */}
+    <header className="sticky top-0 inset-x-0 z-40 bg-[#FFFDF8]/95 backdrop-blur-md border-b border-[#EFECE4] shadow-xs">
+      <div className="max-w-6xl mx-auto h-16 px-4 sm:px-6 flex items-center justify-between gap-3">
+        {/* Left: Kolhapur Royal Brand logo */}
         <div
-          onClick={() => onNavigateTab('landing')}
-          className="flex items-center gap-3 cursor-pointer group flex-shrink-0"
+          onClick={() => onNavTabChange('home')}
+          className="flex items-center gap-2.5 cursor-pointer flex-shrink-0 group"
         >
-          <div className="w-10 h-10 rounded-2xl gold-gradient-bg flex items-center justify-center text-[#22070E] font-black font-royal text-xl shadow-lg shadow-[#C6A15B]/25 group-hover:scale-105 transition-transform duration-300">
-            K
+          {/* Royal Kolhapur 'क' monogram */}
+          <div className="w-10 h-10 rounded-xl bg-[#7B2638] text-[#FFFDF8] flex items-center justify-center font-serif text-xl font-black shadow-md border border-[#C6A15B]/30 group-hover:scale-105 transition-transform">
+            क
           </div>
           <div className="flex flex-col min-w-0">
-            <div className="flex items-center gap-2">
-              <span className="font-royal font-bold text-lg sm:text-xl text-[#FFF9EF] tracking-tight truncate leading-none group-hover:text-[#C6A15B] transition-colors">
-                ParkKolhapur AI
+            <div className="flex items-center gap-1.5">
+              <span className="font-extrabold text-[17px] text-[#7B2638] font-serif tracking-tight leading-none">
+                ParkKolhapur<span className="text-[#C6A15B] ml-0.5 font-sans text-xs uppercase font-extrabold">AI</span>
               </span>
-              <span className="text-[10px] font-black text-[#22070E] px-2 py-0.5 rounded-full gold-gradient-bg uppercase tracking-wider shadow-sm">
+              <span className="text-[9px] font-extrabold text-[#7B2638] px-1.5 py-0.5 rounded bg-[#C6A15B]/20 uppercase tracking-wider border border-[#C6A15B]/30">
                 KMC
               </span>
             </div>
-            <span className="text-[11px] text-[#C6A15B] font-semibold leading-tight truncate mt-0.5 flex items-center gap-1">
-              <span>श्रीमंत छत्रपती शाहू नगरी</span>
-              <span>•</span>
-              <span>Smart Mobility</span>
+            <span className="text-[11px] text-[#5e5954] leading-tight mt-0.5 font-medium truncate max-w-[200px] sm:max-w-none">
+              {t.nav.municipalMobility}
             </span>
           </div>
         </div>
 
-        {/* Center: Desktop Navigation Links */}
+        {/* Center: Dynamic Role-Based Desktop Navigation */}
         <nav className="hidden lg:flex items-center gap-1">
           <button
             type="button"
-            onClick={() => onNavigateTab('landing')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'landing'
-                ? 'bg-[#651E2B] text-[#FFF9EF] border border-[#C6A15B]/40 shadow'
-                : 'text-[#E8DECE] hover:text-[#FFF9EF] hover:bg-white/5'
+            onClick={() => onNavTabChange('home')}
+            className={`px-3 py-1.5 rounded-lg text-[13px] font-bold transition-all cursor-pointer ${
+              activeNavTab === 'home'
+                ? 'bg-[#7B2638] text-[#FFFDF8]'
+                : 'text-[#5e5954] hover:text-[#7B2638] hover:bg-[#F7F4EE]'
             }`}
           >
-            Home
+            {t.nav.home}
           </button>
 
           <button
             type="button"
-            onClick={() => onNavigateTab('explore')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'explore'
-                ? 'bg-[#651E2B] text-[#FFF9EF] border border-[#C6A15B]/40 shadow'
-                : 'text-[#E8DECE] hover:text-[#FFF9EF] hover:bg-white/5'
+            onClick={() => onNavTabChange('explore')}
+            className={`px-3 py-1.5 rounded-lg text-[13px] font-bold transition-all cursor-pointer ${
+              activeNavTab === 'explore'
+                ? 'bg-[#7B2638] text-[#FFFDF8]'
+                : 'text-[#5e5954] hover:text-[#7B2638] hover:bg-[#F7F4EE]'
             }`}
           >
-            <Compass className="w-3.5 h-3.5 text-[#C6A15B]" />
-            <span>Live Parking Hubs</span>
+            {t.nav.findParking}
           </button>
 
           <button
             type="button"
-            onClick={onOpenMap}
-            className="px-3 py-1.5 rounded-xl text-xs font-bold text-[#E8DECE] hover:text-[#FFF9EF] hover:bg-white/5 transition-all cursor-pointer flex items-center gap-1.5"
-          >
-            <MapPin className="w-3.5 h-3.5 text-[#C6A15B]" />
-            <span>Interactive Map</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={onOpenShuttle}
-            className="px-3 py-1.5 rounded-xl text-xs font-bold text-[#E8DECE] hover:text-[#FFF9EF] hover:bg-white/5 transition-all cursor-pointer flex items-center gap-1.5"
-          >
-            <Bus className="w-3.5 h-3.5 text-[#C6A15B]" />
-            <span>Darshan E-Shuttle</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => onNavigateTab('bookings')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 relative ${
-              activeTab === 'bookings'
-                ? 'bg-[#651E2B] text-[#FFF9EF] border border-[#C6A15B]/40 shadow'
-                : 'text-[#E8DECE] hover:text-[#FFF9EF] hover:bg-white/5'
+            onClick={() => onNavTabChange('map')}
+            className={`px-3 py-1.5 rounded-lg text-[13px] font-bold transition-all cursor-pointer ${
+              activeNavTab === 'map'
+                ? 'bg-[#7B2638] text-[#FFFDF8]'
+                : 'text-[#5e5954] hover:text-[#7B2638] hover:bg-[#F7F4EE]'
             }`}
           >
-            <Ticket className="w-3.5 h-3.5 text-[#C6A15B]" />
-            <span>My Passes</span>
-            {activeBookingsCount > 0 && (
-              <span className="w-4 h-4 rounded-full bg-[#10B981] text-[#1A0A0F] text-[9px] font-black flex items-center justify-center">
-                {activeBookingsCount}
-              </span>
-            )}
+            {t.nav.liveMap}
           </button>
 
-          <button
-            type="button"
-            onClick={onOpenVehicles}
-            className="px-3 py-1.5 rounded-xl text-xs font-bold text-[#E8DECE] hover:text-[#FFF9EF] hover:bg-white/5 transition-all cursor-pointer flex items-center gap-1.5"
-          >
-            <Car className="w-3.5 h-3.5 text-[#C6A15B]" />
-            <span>Garage</span>
-          </button>
-
-          {currentRole === 'OWNER' && (
+          {/* DYNAMIC DASHBOARD LINK ACCORDING TO ROLE */}
+          {currentUser.role === 'CUSTOMER' && (
             <button
               type="button"
-              onClick={() => onNavigateTab('owner')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                activeTab === 'owner' ? 'bg-[#651E2B] text-[#FFF9EF] border border-[#C6A15B]/40' : 'text-[#E8DECE]'
+              onClick={() => onNavTabChange('customer-dashboard')}
+              className={`px-3 py-1.5 rounded-lg text-[13px] font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeNavTab === 'customer-dashboard' || activeNavTab === 'bookings'
+                  ? 'bg-[#7B2638] text-[#FFFDF8]'
+                  : 'text-[#5e5954] hover:text-[#7B2638] hover:bg-[#F7F4EE]'
               }`}
             >
-              Host Portal
+              <LayoutDashboard className="w-3.5 h-3.5" />
+              <span>{t.nav.citizenDashboard}</span>
             </button>
           )}
 
-          {currentRole === 'ADMIN' && (
+          {currentUser.role === 'OWNER' && (
             <button
               type="button"
-              onClick={() => onNavigateTab('admin')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                activeTab === 'admin' ? 'bg-[#651E2B] text-[#FFF9EF] border border-[#C6A15B]/40' : 'text-[#E8DECE]'
+              onClick={() => onNavTabChange('owner-dashboard')}
+              className={`px-3 py-1.5 rounded-lg text-[13px] font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeNavTab === 'owner-dashboard' || activeNavTab === 'owner'
+                  ? 'bg-[#7B2638] text-[#FFFDF8]'
+                  : 'text-[#5e5954] hover:text-[#7B2638] hover:bg-[#F7F4EE]'
               }`}
             >
-              KMC Admin
+              <Building2 className="w-3.5 h-3.5 text-[#C6A15B]" />
+              <span>{t.nav.ownerHub}</span>
+            </button>
+          )}
+
+          {currentUser.role === 'ADMIN' && (
+            <button
+              type="button"
+              onClick={() => onNavTabChange('admin-dashboard')}
+              className={`px-3 py-1.5 rounded-lg text-[13px] font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeNavTab === 'admin-dashboard' || activeNavTab === 'admin'
+                  ? 'bg-[#7B2638] text-[#FFFDF8]'
+                  : 'text-[#5e5954] hover:text-[#7B2638] hover:bg-[#F7F4EE]'
+              }`}
+            >
+              <ShieldAlert className="w-3.5 h-3.5 text-[#C6A15B]" />
+              <span>{t.nav.adminCommand}</span>
             </button>
           )}
         </nav>
 
-        {/* Right: Actions, Role Switcher, Notification, Profile */}
-        <div className="flex items-center gap-2.5 flex-shrink-0">
-          
-          {/* Role Indicator Button */}
+        {/* Right: Language Switcher, Role indicator, Bell, Profile/Auth */}
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+          {/* Multilingual Selector: English, Marathi, Hindi */}
+          <LanguageSwitcher />
+
+          {/* Active Persona Badge */}
           <button
             onClick={onRoleClick}
             type="button"
-            title="Click to Switch Role"
-            className="hidden sm:flex h-8 px-3 rounded-full bg-[#3D101C] border border-[#C6A15B]/40 items-center gap-1.5 hover:bg-[#651E2B] transition-colors cursor-pointer shadow-sm"
+            title="Switch Persona / Account"
+            className="h-8 px-2 sm:px-2.5 rounded-full bg-[#F7F4EE] hover:bg-[#EFECE4] flex items-center gap-1.5 transition-colors cursor-pointer border border-[#EFECE4]"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
-            <span className="text-[10px] font-extrabold text-[#C6A15B] uppercase tracking-wider">
-              {currentRole}
+            <span
+              className={`w-2 h-2 rounded-full ${
+                currentUser.role === 'ADMIN'
+                  ? 'bg-[#7B2638]'
+                  : currentUser.role === 'OWNER'
+                  ? 'bg-[#C6A15B]'
+                  : 'bg-[#26965B]'
+              } animate-pulse`}
+            />
+            <span className="text-[10px] font-extrabold text-[#7B2638] uppercase tracking-wider">
+              {currentUser.role}
             </span>
           </button>
 
@@ -194,123 +185,42 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={onNotificationsClick}
             type="button"
-            aria-label="City Notifications"
-            className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#3D101C]/80 hover:bg-[#651E2B] text-[#FFF9EF] transition-all relative border border-[#C6A15B]/30 cursor-pointer shadow-sm"
+            aria-label="City Alerts & Notifications"
+            className="w-8 sm:w-9 h-8 sm:h-9 flex items-center justify-center rounded-xl bg-[#F7F4EE] text-[#5e5954] hover:bg-[#EFECE4] hover:text-[#7B2638] transition-colors relative border border-[#EFECE4] cursor-pointer"
           >
-            <Bell className="w-4 h-4 text-[#C6A15B]" />
+            <Bell className="w-4 h-4" />
             {unreadNotificationsCount > 0 && (
-              <span className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-[#F59E0B] shadow-[0_0_8px_rgba(245,158,11,0.9)] animate-ping" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#7B2638] ring-2 ring-[#FFFDF8]" />
             )}
           </button>
 
           {/* User Profile / Auth Button */}
-          {currentUser ? (
+          {currentUser.isLoggedIn ? (
             <button
               onClick={onProfileClick}
               type="button"
-              className="flex items-center gap-2 p-1 pl-2 pr-2.5 rounded-xl bg-[#3D101C] border border-[#C6A15B]/30 hover:border-[#C6A15B] transition-all cursor-pointer"
+              aria-label="Citizen Account"
+              className="flex items-center gap-1.5 sm:gap-2 h-8 sm:h-9 pl-1.5 sm:pl-2 pr-2.5 sm:pr-3 rounded-full bg-[#FFFDF8] border border-[#C6A15B]/40 hover:border-[#7B2638] transition-all cursor-pointer shadow-xs"
             >
-              <img
-                src={currentUser.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80'}
-                alt={currentUser.name}
-                className="w-7 h-7 rounded-lg object-cover border border-[#C6A15B]"
-              />
-              <span className="hidden sm:inline text-xs font-bold text-[#FFF9EF] max-w-[100px] truncate">
-                {currentUser.name.split(' ')[0]}
+              <div className="w-6 h-6 rounded-full bg-[#7B2638] text-[#FFFDF8] font-bold text-xs flex items-center justify-center">
+                {currentUser.name.charAt(0)}
+              </div>
+              <span className="text-[12px] font-bold text-[#7B2638] hidden sm:inline max-w-[110px] truncate">
+                {currentUser.name}
               </span>
             </button>
           ) : (
             <button
-              onClick={onOpenAuth}
+              onClick={onAuthClick}
               type="button"
-              className="h-10 px-4 rounded-xl gold-gradient-bg text-[#22070E] font-bold text-xs flex items-center gap-1.5 shadow-md hover:brightness-105 active:scale-95 transition-all cursor-pointer"
+              className="h-8 sm:h-9 px-3 sm:px-3.5 rounded-xl bg-[#7B2638] text-[#FFFDF8] font-bold text-[11px] sm:text-[12px] flex items-center gap-1 shadow-sm hover:bg-[#5e1c2a] transition-all cursor-pointer"
             >
-              <LogIn className="w-4 h-4" />
-              <span>Sign In</span>
+              <User className="w-3.5 h-3.5" />
+              <span>{t.nav.signIn}</span>
             </button>
           )}
-
-          {/* Mobile Menu Hamburger */}
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-[#3D101C] border border-[#C6A15B]/30 text-[#FFF9EF] cursor-pointer"
-          >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
         </div>
-
       </div>
-
-      {/* Mobile Drawer Menu */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#22070E] border-b border-[#C6A15B]/30 px-4 py-4 space-y-2 animate-in slide-in-from-top-2 duration-200">
-          <div className="grid grid-cols-2 gap-2 pb-2 border-b border-white/10">
-            <button
-              type="button"
-              onClick={() => { onNavigateTab('landing'); setMobileMenuOpen(false); }}
-              className="p-2.5 rounded-xl bg-[#3D101C] text-left text-xs font-bold text-[#FFF9EF]"
-            >
-              Home (Landing)
-            </button>
-            <button
-              type="button"
-              onClick={() => { onNavigateTab('explore'); setMobileMenuOpen(false); }}
-              className="p-2.5 rounded-xl bg-[#3D101C] text-left text-xs font-bold text-[#FFF9EF]"
-            >
-              Live Parking Hubs
-            </button>
-            <button
-              type="button"
-              onClick={() => { onOpenMap(); setMobileMenuOpen(false); }}
-              className="p-2.5 rounded-xl bg-[#3D101C] text-left text-xs font-bold text-[#C6A15B]"
-            >
-              Interactive Map
-            </button>
-            <button
-              type="button"
-              onClick={() => { onOpenShuttle(); setMobileMenuOpen(false); }}
-              className="p-2.5 rounded-xl bg-[#3D101C] text-left text-xs font-bold text-[#C6A15B]"
-            >
-              Darshan Shuttle
-            </button>
-            <button
-              type="button"
-              onClick={() => { onNavigateTab('bookings'); setMobileMenuOpen(false); }}
-              className="p-2.5 rounded-xl bg-[#3D101C] text-left text-xs font-bold text-[#FFF9EF]"
-            >
-              My Passes ({activeBookingsCount})
-            </button>
-            <button
-              type="button"
-              onClick={() => { onOpenVehicles(); setMobileMenuOpen(false); }}
-              className="p-2.5 rounded-xl bg-[#3D101C] text-left text-xs font-bold text-[#FFF9EF]"
-            >
-              My Vehicles
-            </button>
-          </div>
-
-          <div className="flex items-center justify-between pt-1">
-            <button
-              type="button"
-              onClick={() => { onRoleClick(); setMobileMenuOpen(false); }}
-              className="text-xs font-bold text-[#C6A15B] flex items-center gap-1.5"
-            >
-              <span>Current Role: {currentRole}</span>
-              <span className="text-[10px] text-white underline">(Change)</span>
-            </button>
-            {!currentUser && (
-              <button
-                type="button"
-                onClick={() => { onOpenAuth(); setMobileMenuOpen(false); }}
-                className="px-3 py-1.5 rounded-lg gold-gradient-bg text-[#22070E] font-bold text-xs"
-              >
-                Sign In
-              </button>
-            )}
-          </div>
-        </div>
-      )}
     </header>
   );
 };

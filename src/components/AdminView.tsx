@@ -8,9 +8,8 @@ import {
   CheckCircle2,
   RefreshCw,
   Zap,
-  TrendingUp,
-  AlertTriangle,
-  Sparkles,
+  Server,
+  Layers,
 } from 'lucide-react';
 
 export const AdminView: React.FC = () => {
@@ -24,120 +23,139 @@ export const AdminView: React.FC = () => {
   };
 
   return (
-    <div className="w-full flex flex-col gap-6 pb-20 pt-4 animate-in fade-in max-w-5xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="w-full max-w-4xl mx-auto flex flex-col gap-4 pb-20 pt-2 animate-in fade-in text-left">
+      <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="font-royal text-2xl sm:text-3xl font-extrabold text-[#FFF9EF] tracking-tight">
-              KMC Edge Command Center
+            <h2 className="text-[20px] font-bold text-[#7B2638] font-serif tracking-tight">
+              KMC Edge Command
             </h2>
-            <span className="text-[10px] font-black uppercase gold-gradient-bg text-[#22070E] px-2 py-0.5 rounded tracking-wider shadow">
-              MUNICIPAL AUTHORITY
+            <span className="text-[10px] font-extrabold uppercase bg-[#7B2638] text-[#FFFDF8] px-2 py-0.5 rounded-full shadow-xs">
+              MUNICIPAL TELEMETRY
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-[#C6A15B] mt-0.5">
-            Kolhapur Municipal Corporation Smart Mobility & Temple Corridor Telemetry
+          <p className="text-[12px] text-[#5e5954]">
+            Kolhapur Municipal Corporation Smart Mobility Telemetry & Gateway Status
           </p>
         </div>
 
         <button
           type="button"
           onClick={handleSync}
-          className="h-10 px-4 rounded-xl gold-gradient-bg text-[#22070E] text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md hover:brightness-105 active:scale-95"
+          className="h-8 px-3 rounded-xl bg-[#FFFFFF] hover:bg-[#F7F4EE] text-[#7B2638] text-[11px] font-bold flex items-center gap-1.5 transition-colors cursor-pointer border border-[#EFECE4] shadow-xs"
         >
-          <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
-          <span>Sync All 42 Edge Nodes</span>
+          <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin text-[#7B2638]' : ''}`} />
+          <span>Sync Nodes</span>
         </button>
       </div>
 
-      {/* Real-time Telemetry Summary */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="p-4 rounded-2xl bg-gradient-to-b from-[#3D101C] to-[#22070E] border border-[#C6A15B]/30 flex flex-col shadow">
-          <span className="text-[10px] text-[#B8ADA0] uppercase font-bold">City-Wide Occupancy</span>
-          <span className="font-royal text-2xl font-black text-[#F59E0B] mt-1">74.2%</span>
-          <span className="text-[10px] text-[#10B981] font-bold">236 / 320 Active Bays</span>
+      {/* Real-time telemetry summary */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="p-4 rounded-2xl bg-[#FFFFFF] border border-[#EFECE4] shadow-xs flex flex-col">
+          <span className="text-[10px] text-[#5e5954] uppercase font-bold">City Occupancy</span>
+          <span className="text-[26px] font-extrabold text-[#7B2638] mt-1 font-serif">74.2%</span>
+          <span className="text-[11px] text-[#26965B] font-semibold">182 / 245 Bays Filled</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-gradient-to-b from-[#3D101C] to-[#22070E] border border-[#C6A15B]/30 flex flex-col shadow">
-          <span className="text-[10px] text-[#B8ADA0] uppercase font-bold">IoT Sensors Online</span>
-          <span className="font-royal text-2xl font-black text-[#10B981] mt-1">42 / 42</span>
-          <span className="text-[10px] text-[#C6A15B]">100% Sub-Second Sync</span>
+        <div className="p-4 rounded-2xl bg-[#FFFFFF] border border-[#EFECE4] shadow-xs flex flex-col">
+          <span className="text-[10px] text-[#5e5954] uppercase font-bold">IoT Sensors Online</span>
+          <span className="text-[26px] font-extrabold text-[#26965B] mt-1 font-serif">48 / 48</span>
+          <span className="text-[11px] text-[#5e5954]">100% Edge Gateways Up</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-gradient-to-b from-[#3D101C] to-[#22070E] border border-[#C6A15B]/30 flex flex-col shadow">
-          <span className="text-[10px] text-[#B8ADA0] uppercase font-bold">Aarti Rush AI Model</span>
-          <span className="font-royal text-2xl font-black text-[#C6A15B] mt-1">v4.2 Pro</span>
-          <span className="text-[10px] text-[#10B981] font-bold">Active Forecasting</span>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-gradient-to-b from-[#3D101C] to-[#22070E] border border-[#C6A15B]/30 flex flex-col shadow">
-          <span className="text-[10px] text-[#B8ADA0] uppercase font-bold">Daily Municipal Revenue</span>
-          <span className="font-royal text-2xl font-black text-[#FFF9EF] mt-1">₹48,250</span>
-          <span className="text-[10px] text-[#10B981] font-bold">+18.5% Pilgrimage Peak</span>
+        <div className="p-4 rounded-2xl bg-[#FFFFFF] border border-[#EFECE4] shadow-xs flex flex-col">
+          <span className="text-[10px] text-[#5e5954] uppercase font-bold">AI Aarti Surge Model</span>
+          <span className="text-[26px] font-extrabold text-[#C6A15B] mt-1 font-serif">v3.4 ML</span>
+          <span className="text-[11px] text-[#5e5954]">Calibrated for 6:30 PM Aarti</span>
         </div>
       </div>
 
-      {/* Corridor Emergency Controls */}
-      <div className="p-5 rounded-2xl bg-[#22070E] border border-[#C6A15B]/35 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div>
-          <span className="text-xs font-bold text-[#FFF9EF] block">
-            Temple Aarti Surge Auto-Balancing
-          </span>
-          <span className="text-[11px] text-[#B8ADA0] block mt-0.5">
-            Automatically routes incoming pilgrims to New Palace & Rankala hubs when Mahalaxmi South Gate exceeds 80% occupancy.
+      {/* KMC Edge Nodes Status */}
+      <div className="rounded-2xl bg-[#FFFFFF] border border-[#EFECE4] shadow-xs overflow-hidden">
+        <div className="p-4 border-b border-[#EFECE4] flex items-center justify-between">
+          <h3 className="text-[14px] font-bold text-[#7B2638] font-serif uppercase tracking-wider">
+            Municipal Edge Node Gateways
+          </h3>
+          <span className="text-[11px] font-semibold text-[#26965B] flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#26965B] animate-pulse" />
+            Active Sub-Second Polling
           </span>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setAartiSurgeActive(!aartiSurgeActive)}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
-            aartiSurgeActive
-              ? 'bg-[#10B981]/20 text-[#10B981] border-[#10B981]'
-              : 'bg-[#EF4444]/20 text-[#EF4444] border-[#EF4444]'
-          }`}
-        >
-          {aartiSurgeActive ? '✓ Surge Model Active' : 'Model Paused'}
-        </button>
-      </div>
-
-      {/* KMC Edge Nodes Status List */}
-      <div className="space-y-3">
-        <h3 className="font-royal text-lg font-bold text-[#FFF9EF]">
-          Active Municipal Edge Node Gateways
-        </h3>
-
-        <div className="space-y-2.5">
+        <div className="divide-y divide-[#EFECE4]">
           {[
             { name: 'Node #1: Mahalaxmi South Gate Gateway', latency: '12ms', ip: '192.168.10.4', status: 'ONLINE', bays: '18 open / 40' },
-            { name: 'Node #2: New Palace Royal Grounds Gateway', latency: '14ms', ip: '192.168.10.6', status: 'ONLINE', bays: '54 open / 85' },
-            { name: 'Node #3: Rankala Chowpatty DC Fast Hub', latency: '16ms', ip: '192.168.10.8', status: 'ONLINE', bays: '34 open / 60' },
-            { name: 'Node #4: Bhavani Mandap Heritage Cam Node', latency: '14ms', ip: '192.168.10.12', status: 'ONLINE', bays: '4 open / 25' },
-            { name: 'Node #5: CBS MSRTC Multi-Tier Terminal', latency: '21ms', ip: '192.168.10.16', status: 'ONLINE', bays: '52 open / 120' },
-          ].map((node) => (
-            <div
-              key={node.name}
-              className="p-4 rounded-2xl bg-[#22070E] border border-white/5 flex items-center justify-between text-xs"
-            >
-              <div className="flex items-center gap-3">
-                <Radio className="w-4 h-4 text-[#10B981] animate-pulse flex-shrink-0" />
+            { name: 'Node #2: Rankala Chowpatty DC Hub', latency: '18ms', ip: '192.168.10.8', status: 'ONLINE', bays: '34 open / 60' },
+            { name: 'Node #3: New Palace Visitor Gateway', latency: '14ms', ip: '192.168.10.12', status: 'ONLINE', bays: '28 open / 50' },
+            { name: 'Node #4: Panhala Fort Base Node', latency: '24ms', ip: '192.168.10.16', status: 'ONLINE', bays: '45 open / 70' },
+            { name: 'Node #5: Central Bus Stand (CBS) Hub', latency: '9ms', ip: '192.168.10.20', status: 'ONLINE', bays: '52 open / 120' },
+          ].map((node, i) => (
+            <div key={i} className="p-3.5 flex items-center justify-between text-[12px] gap-2 flex-wrap sm:flex-nowrap">
+              <div className="flex items-center gap-2.5">
+                <Server className="w-4 h-4 text-[#7B2638]" />
                 <div>
-                  <span className="font-bold text-[#FFF9EF] block">{node.name}</span>
-                  <span className="text-[11px] text-[#B8ADA0]">
-                    IP: {node.ip} • Latency: {node.latency}
-                  </span>
+                  <span className="font-bold text-[#292725] block">{node.name}</span>
+                  <span className="text-[10px] text-[#5e5954]">{node.ip} • Latency: {node.latency}</span>
                 </div>
               </div>
-
-              <div className="text-right">
-                <span className="font-bold text-[#C6A15B] block">{node.bays}</span>
-                <span className="text-[10px] font-black text-[#10B981] uppercase">
+              <div className="flex items-center gap-3">
+                <span className="text-[11px] font-bold text-[#26965B] bg-[#edf8f2] px-2 py-0.5 rounded">
+                  {node.bays}
+                </span>
+                <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-[#26965B] text-white">
                   {node.status}
                 </span>
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Control Toggles */}
+      <div className="p-4 rounded-2xl bg-[#FFFFFF] border border-[#EFECE4] shadow-xs space-y-3">
+        <h3 className="text-[13px] font-bold text-[#7B2638] uppercase tracking-wider">
+          Smart City Municipal Overrides
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="p-3 rounded-xl bg-[#F7F4EE] border border-[#EFECE4] flex items-center justify-between">
+            <div>
+              <span className="text-[12px] font-bold text-[#292725] block">Aarti Surge Protection</span>
+              <span className="text-[10px] text-[#5e5954]">Auto-holds 20% bays for pilgrims</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setAartiSurgeActive(!aartiSurgeActive)}
+              className={`w-10 h-5 rounded-full p-0.5 transition-colors cursor-pointer ${
+                aartiSurgeActive ? 'bg-[#7B2638]' : 'bg-[#EFECE4]'
+              }`}
+            >
+              <div
+                className={`w-4 h-4 rounded-full bg-white shadow-xs transition-transform ${
+                  aartiSurgeActive ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          </div>
+
+          <div className="p-3 rounded-xl bg-[#F7F4EE] border border-[#EFECE4] flex items-center justify-between">
+            <div>
+              <span className="text-[12px] font-bold text-[#292725] block">Emergency Vehicle Priority</span>
+              <span className="text-[10px] text-[#5e5954]">Frees Bhausingji Road corridor</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setEmergencyCorridor(!emergencyCorridor)}
+              className={`w-10 h-5 rounded-full p-0.5 transition-colors cursor-pointer ${
+                emergencyCorridor ? 'bg-[#7B2638]' : 'bg-[#EFECE4]'
+              }`}
+            >
+              <div
+                className={`w-4 h-4 rounded-full bg-white shadow-xs transition-transform ${
+                  emergencyCorridor ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          </div>
         </div>
       </div>
     </div>

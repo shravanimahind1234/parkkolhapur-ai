@@ -1,155 +1,199 @@
 import React from 'react';
-import {
-  X,
-  User,
-  ShieldCheck,
-  ParkingCircle,
-  CheckCircle2,
-  Phone,
-  Mail,
-  Award,
-  LogOut,
-} from 'lucide-react';
-import { UserAccount } from '../types';
+import { X, Car, Shield, Check, CreditCard, Sparkles, User, LogOut, LayoutDashboard, Building2, ShieldAlert } from 'lucide-react';
+import { UserAccount, UserRole } from '../types';
+import { DEMO_ACCOUNTS } from '../data/mockData';
 
 interface ProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
-  currentRole: 'SEEKER' | 'OWNER' | 'ADMIN';
-  onRoleChange: (newRole: 'SEEKER' | 'OWNER' | 'ADMIN') => void;
-  currentUser?: UserAccount | null;
-  onSignOut?: () => void;
+  currentUser: UserAccount;
+  onSwitchUser: (user: UserAccount) => void;
+  onOpenVehicles: () => void;
+  onOpenDashboard: () => void;
+  onSignOut: () => void;
 }
 
 export const ProfileModal: React.FC<ProfileModalProps> = ({
   isOpen,
   onClose,
-  currentRole,
-  onRoleChange,
   currentUser,
+  onSwitchUser,
+  onOpenVehicles,
+  onOpenDashboard,
   onSignOut,
 }) => {
   if (!isOpen) return null;
 
-  const roles = [
-    {
-      id: 'SEEKER',
-      title: 'Pilgrim / Citizen Seeker',
-      desc: 'Find live parking bays, book temple passes, and ride free e-shuttles.',
-      icon: User,
-    },
-    {
-      id: 'OWNER',
-      title: 'Private Lot Host / Owner',
-      desc: 'List vacant plots, manage parking bays, and receive daily municipal payouts.',
-      icon: ParkingCircle,
-    },
-    {
-      id: 'ADMIN',
-      title: 'KMC Municipal Officer',
-      desc: 'City-wide sensor telemetry, aarti surge AI control, and edge node monitoring.',
-      icon: ShieldCheck,
-    },
-  ];
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-3 sm:p-4 animate-in fade-in">
-      <div className="w-full max-w-md bg-gradient-to-b from-[#3D101C] via-[#22070E] to-[#1A0A0F] border border-[#C6A15B]/35 rounded-3xl shadow-2xl overflow-hidden flex flex-col text-[#FFF9EF]">
-        
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-0 sm:p-4 animate-in fade-in duration-200">
+      <div className="w-full max-w-md bg-[#FFFDF8] border-t sm:border border-[#C6A15B]/30 rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden p-6 space-y-4 text-left">
         {/* Header */}
-        <div className="p-5 bg-[#22070E] border-b border-white/10 flex items-center justify-between">
+        <div className="flex items-center justify-between border-b border-[#EFECE4] pb-3">
           <div className="flex items-center gap-3">
-            <img
-              src={currentUser?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80'}
-              alt="Profile"
-              className="w-11 h-11 rounded-2xl object-cover border-2 border-[#C6A15B]"
-            />
+            <div className="w-12 h-12 rounded-2xl bg-[#7B2638] text-[#FFFDF8] font-serif font-black text-xl flex items-center justify-center shadow-md">
+              {currentUser.name.charAt(0)}
+            </div>
             <div>
-              <h3 className="font-royal text-base sm:text-lg font-bold text-[#FFF9EF] leading-tight">
-                {currentUser?.name || 'Kolhapur Citizen'}
-              </h3>
-              <span className="text-xs text-[#C6A15B] font-semibold">
-                {currentUser?.email || 'citizen@kolhapur.gov.in'}
-              </span>
+              <div className="flex items-center gap-1.5">
+                <h3 className="text-[17px] font-bold text-[#7B2638] font-serif">
+                  {currentUser.name}
+                </h3>
+                <span
+                  className={`text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded-full ${
+                    currentUser.role === 'ADMIN'
+                      ? 'bg-[#7B2638] text-white'
+                      : currentUser.role === 'OWNER'
+                      ? 'bg-[#C6A15B] text-black'
+                      : 'bg-[#edf8f2] text-[#26965B]'
+                  }`}
+                >
+                  {currentUser.role}
+                </span>
+              </div>
+              <p className="text-[11px] text-[#5e5954] mt-0.5">
+                {currentUser.citizenBadge} • UID: {currentUser.id.slice(0, 10)}
+              </p>
             </div>
           </div>
-
           <button
-            onClick={onClose}
             type="button"
-            className="w-8 h-8 rounded-full bg-[#1A0A0F] text-[#B8ADA0] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            onClick={onClose}
+            className="w-8 h-8 rounded-full bg-[#F7F4EE] hover:bg-[#EFECE4] text-[#5e5954] flex items-center justify-center cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Roles Selection */}
-        <div className="p-5 space-y-4">
-          <div>
-            <span className="text-xs uppercase font-extrabold tracking-wider text-[#C6A15B] block mb-2">
-              Active Municipal Role
-            </span>
-            <div className="space-y-2">
-              {roles.map((r) => {
-                const Icon = r.icon;
-                const isSelected = currentRole === r.id;
-                return (
-                  <button
-                    key={r.id}
-                    type="button"
-                    onClick={() => {
-                      onRoleChange(r.id as any);
-                      onClose();
-                    }}
-                    className={`w-full p-3.5 rounded-2xl border text-left flex items-start gap-3 transition-all cursor-pointer ${
-                      isSelected
-                        ? 'bg-[#651E2B] border-[#C6A15B] shadow-lg shadow-[#651E2B]/40'
-                        : 'bg-[#1A0A0F]/70 border-white/5 hover:border-white/20'
-                    }`}
-                  >
-                    <div className="w-8 h-8 rounded-xl bg-[#22070E] border border-white/10 flex items-center justify-center flex-shrink-0 text-[#C6A15B]">
-                      <Icon className="w-4 h-4" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-[#FFF9EF]">{r.title}</span>
-                        {isSelected && <CheckCircle2 className="w-4 h-4 text-[#10B981]" />}
-                      </div>
-                      <p className="text-[11px] text-[#B8ADA0] mt-0.5 leading-snug">
-                        {r.desc}
-                      </p>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+        {/* Action: Open Dashboard */}
+        <button
+          type="button"
+          onClick={() => {
+            onClose();
+            onOpenDashboard();
+          }}
+          className="w-full h-11 rounded-2xl bg-[#7B2638] text-[#FFFDF8] font-bold text-xs flex items-center justify-center gap-2 shadow-sm hover:bg-[#5e1c2a] transition-all cursor-pointer"
+        >
+          <LayoutDashboard className="w-4 h-4 text-[#C6A15B]" />
+          <span>
+            Open {currentUser.role === 'ADMIN' ? 'Admin Command' : currentUser.role === 'OWNER' ? 'Owner Hub' : 'Citizen Dashboard'}
+          </span>
+        </button>
 
-          {/* Citizen Helpline */}
-          <div className="p-3.5 rounded-2xl bg-[#1A0A0F] border border-white/5 text-xs text-[#B8ADA0] space-y-1">
-            <span className="font-bold text-[#FFF9EF] block">Kolhapur Municipal Corporation (KMC)</span>
-            <p>Smart Mobility Office, Bhausingji Road</p>
-            <p className="text-[#C6A15B] font-semibold">Toll-Free Helpline: 1800 233 1234</p>
+        {/* Switch Persona / Account Selection for Multi-Account Testing */}
+        <div className="space-y-2">
+          <label className="text-[11px] font-bold text-[#5e5954] uppercase tracking-wider block">
+            Switch Test Persona (Strict Isolation)
+          </label>
+          <div className="space-y-1.5">
+            {DEMO_ACCOUNTS.map((acc) => {
+              const isCurrent = acc.id === currentUser.id;
+              return (
+                <button
+                  key={acc.id}
+                  type="button"
+                  onClick={() => {
+                    onSwitchUser(acc);
+                    onClose();
+                  }}
+                  className={`w-full p-2.5 rounded-2xl text-left border flex items-center justify-between transition-all cursor-pointer ${
+                    isCurrent
+                      ? 'bg-[#F7F4EE] border-[#7B2638] ring-1 ring-[#7B2638]'
+                      : 'bg-white border-[#EFECE4] hover:bg-[#FFFDF8]'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div
+                      className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold ${
+                        acc.role === 'ADMIN'
+                          ? 'bg-[#7B2638] text-white'
+                          : acc.role === 'OWNER'
+                          ? 'bg-[#C6A15B] text-black'
+                          : 'bg-[#edf8f2] text-[#26965B]'
+                      }`}
+                    >
+                      {acc.role === 'ADMIN' ? <ShieldAlert className="w-4 h-4" /> : acc.role === 'OWNER' ? <Building2 className="w-4 h-4" /> : <User className="w-4 h-4" />}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[13px] font-bold text-[#292725]">{acc.name}</span>
+                        <span className="text-[9px] font-bold text-[#8a847e] uppercase">({acc.role})</span>
+                      </div>
+                      <span className="text-[10px] text-[#5e5954] block">{acc.email}</span>
+                    </div>
+                  </div>
+
+                  {isCurrent && (
+                    <span className="text-[10px] font-bold text-[#26965B] bg-[#edf8f2] px-2 py-0.5 rounded">
+                      Active
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* Sign Out Button if logged in */}
-        {onSignOut && (
-          <div className="p-4 bg-[#22070E] border-t border-white/10">
-            <button
-              type="button"
-              onClick={() => {
-                onSignOut();
-                onClose();
-              }}
-              className="w-full py-2.5 rounded-xl bg-transparent hover:bg-white/5 border border-white/10 text-xs font-bold text-[#EF4444] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-            >
-              <LogOut className="w-4 h-4" />
-              <span>Sign Out</span>
-            </button>
+        {/* Registered Vehicles Summary */}
+        {currentUser.role === 'CUSTOMER' && (
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-[11px] font-bold text-[#5e5954] uppercase tracking-wider">
+                Saved Vehicles ({currentUser.vehicles.length})
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenVehicles();
+                }}
+                className="text-[11px] font-bold text-[#7B2638] hover:underline cursor-pointer"
+              >
+                Manage
+              </button>
+            </div>
+
+            <div className="space-y-1.5">
+              {currentUser.vehicles.slice(0, 2).map((v) => (
+                <div
+                  key={v.id}
+                  className="p-2.5 rounded-xl bg-[#FFFFFF] border border-[#EFECE4] flex items-center justify-between shadow-2xs"
+                >
+                  <div className="flex items-center gap-2">
+                    <Car className="w-3.5 h-3.5 text-[#7B2638]" />
+                    <span className="text-[12px] font-mono font-bold text-[#292725]">
+                      {v.plateNumber}
+                    </span>
+                  </div>
+                  {v.isDefault && (
+                    <span className="text-[8px] font-bold text-[#26965B] bg-[#edf8f2] px-1.5 py-0.2 rounded">
+                      DEFAULT
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
+        {/* Sign Out Button */}
+        <div className="pt-2 border-t border-[#EFECE4] flex gap-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 h-10 rounded-xl bg-[#F7F4EE] hover:bg-[#EFECE4] text-[#5e5954] font-bold text-xs transition-colors cursor-pointer"
+          >
+            Close
+          </button>
+
+          <button
+            type="button"
+            onClick={onSignOut}
+            className="h-10 px-4 rounded-xl bg-[#fdf0f0] hover:bg-[#fbdada] text-[#D94B4B] font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Sign Out</span>
+          </button>
+        </div>
       </div>
     </div>
   );

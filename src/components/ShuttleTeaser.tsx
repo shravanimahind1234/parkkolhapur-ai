@@ -1,5 +1,6 @@
 import React from 'react';
-import { Bus, ArrowRight, Sparkles } from 'lucide-react';
+import { Bus, ArrowUpRight } from 'lucide-react';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface ShuttleTeaserProps {
   onOpenShuttleDetails: () => void;
@@ -8,38 +9,38 @@ interface ShuttleTeaserProps {
 export const ShuttleTeaser: React.FC<ShuttleTeaserProps> = ({
   onOpenShuttleDetails,
 }) => {
-  return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#3D101C] via-[#651E2B] to-[#3D101C] p-5 sm:p-6 shadow-xl border border-[#C6A15B]/35">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl gold-gradient-bg flex items-center justify-center text-[#22070E] flex-shrink-0 shadow-md">
-            <Bus className="w-6 h-6" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase gold-gradient-bg text-[#22070E] px-2 py-0.5 rounded shadow-sm">
-                FREE AMBABAI CORRIDOR
-              </span>
-              <span className="text-xs text-[#10B981] font-bold">Every 4-6 Mins</span>
-            </div>
-            <h3 className="font-royal text-base sm:text-lg font-bold text-[#FFF9EF] mt-1">
-              Shree Ambabai Darshan E-Rickshaw Shuttle
-            </h3>
-            <p className="text-xs text-[#E8DECE] mt-0.5 max-w-md">
-              Complimentary battery transit from South Gate & Bhavani Mandap lots directly to the Temple Mahadwar gate.
-            </p>
-          </div>
-        </div>
+  const { language } = useLanguage();
 
-        <button
-          type="button"
-          onClick={onOpenShuttleDetails}
-          className="px-4 py-2.5 rounded-xl gold-gradient-bg text-[#22070E] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow hover:brightness-105 active:scale-95 transition-all cursor-pointer whitespace-nowrap self-start sm:self-auto"
-        >
-          <span>View Schedule</span>
-          <ArrowRight className="w-3.5 h-3.5" />
-        </button>
+  return (
+    <section
+      onClick={onOpenShuttleDetails}
+      className="rounded-2xl bg-[#FFFDF8] p-4 flex items-center gap-3.5 shadow-sm border border-[#C6A15B]/40 overflow-hidden relative cursor-pointer hover:border-[#7B2638] transition-all group text-left"
+    >
+      <div
+        className="w-20 h-20 rounded-xl bg-cover bg-center flex-shrink-0 shadow-xs border border-[#EFECE4]"
+        style={{
+          backgroundImage: `url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Mahalaxmi_Temple%2C_Kolhapur.jpg/1280px-Mahalaxmi_Temple%2C_Kolhapur.jpg')`,
+        }}
+      />
+      <div className="flex flex-col min-w-0 flex-1">
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] font-extrabold text-[#7B2638] uppercase tracking-wider flex items-center gap-1">
+            <Bus className="w-3 h-3 text-[#C6A15B]" />
+            {language === 'mr' ? 'मंदिर कॉरिडॉर वाहतूक' : language === 'hi' ? 'मंदिर कॉरिडोर ट्रांजिट' : 'Temple Corridor Transit'}
+          </span>
+          <ArrowUpRight className="w-4 h-4 text-[#8a847e] group-hover:text-[#7B2638] transition-colors" />
+        </div>
+        <h4 className="text-[15px] font-bold text-[#7B2638] font-serif truncate mt-0.5">
+          {language === 'mr' ? 'अंबाबाई दर्शन विशेष ई-शटल' : language === 'hi' ? 'अंबाबाई दर्शन विशेष ई-शटल' : 'Special Ambabai Darshan Shuttles'}
+        </h4>
+        <p className="text-[12px] text-[#5e5954] line-clamp-2 mt-0.5 leading-snug">
+          {language === 'mr'
+            ? 'दक्षिण दरवाजा येथे वाहन पार्क करा आणि महाद्वारासाठी विनामूल्य बॅटरी ई-रिक्षाने जा.'
+            : language === 'hi'
+            ? 'दक्षिण गेट पर वाहन पार्क करें और महाद्वार के लिए मुफ्त बैटरी ई-रिक्शा लें।'
+            : 'Park at South Gate and hop on free battery e-rickshaws directly to the temple Mahadwar.'}
+        </p>
       </div>
-    </div>
+    </section>
   );
 };
