@@ -24,6 +24,7 @@ import {
 import { INITIAL_DESTINATIONS } from '../data/mockData';
 import { ParkingHub, VehicleType, KolhapurDestination } from '../types';
 import { useLanguage } from '../i18n/LanguageContext';
+import { ParkNExploreLogo } from './ParkNExploreLogo';
 
 interface LandingPageProps {
   onFindParkingClick: () => void;
@@ -749,13 +750,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       <footer className="bg-[#FFFDF8] border-t border-[#EFECE4] py-10 px-4 sm:px-6 text-left text-[12px] text-[#5e5954]">
         <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-7 h-7 rounded-lg bg-[#7B2638] text-[#FFFDF8] flex items-center justify-center font-serif font-black text-sm">
-                P
-              </div>
-              <span className="font-extrabold text-[15px] text-[#7B2638] font-serif">
-                ParkN<span className="text-[#C6A15B]">Explore</span>
-              </span>
+            <div className="mb-3">
+              <ParkNExploreLogo
+                size="sm"
+                showKmcBadge={true}
+              />
             </div>
             <p className="text-[#5e5954] leading-relaxed">
               Official smart municipal parking platform authorized by Kolhapur Municipal Corporation (KMC) under the Smart City Mission.

@@ -16,6 +16,7 @@ import {
 import { UserAccount, UserRole } from '../types';
 import { signUpWithEmail, signInWithEmail } from '../lib/supabase';
 import { DEMO_ACCOUNTS, ADMIN_CREDENTIALS } from '../data/mockData';
+import { ParkNExploreLogo } from './ParkNExploreLogo';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -142,23 +143,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         ) : (
           <div className="space-y-4">
             {/* Header */}
-            <div className="flex items-center gap-3 border-b border-[#EFECE4] pb-3">
-              <div className="w-12 h-12 rounded-2xl bg-[#7B2638] text-[#FFFDF8] flex items-center justify-center font-serif text-2xl font-black shadow-md">
-                P
-              </div>
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <h2 className="text-[19px] font-extrabold text-[#7B2638] font-serif tracking-tight">
-                    ParkN<span className="text-[#C6A15B]">Explore</span>
-                  </h2>
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#C6A15B]/20 text-[#7B2638] uppercase tracking-wider">
-                    KMC
-                  </span>
-                </div>
-                <p className="text-[12px] text-[#5e5954]">
-                  {mode === 'signin' ? 'Sign in required to perform parking actions' : 'Create an isolated citizen or owner account'}
-                </p>
-              </div>
+            <div className="border-b border-[#EFECE4] pb-3">
+              <ParkNExploreLogo
+                size="lg"
+                subtitle={mode === 'signin' ? 'Sign in required to perform parking actions' : 'Create an isolated citizen or owner account'}
+                showKmcBadge={true}
+              />
             </div>
 
             {/* Action Prompt Banner if user tried an unauthenticated action */}

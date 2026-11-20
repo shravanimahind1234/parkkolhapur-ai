@@ -15,6 +15,7 @@ import {
 import { UserAccount } from '../types';
 import { useLanguage } from '../i18n/LanguageContext';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { ParkNExploreLogo } from './ParkNExploreLogo';
 
 interface HeaderProps {
   currentRole: 'SEEKER' | 'OWNER' | 'ADMIN';
@@ -46,28 +47,16 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="sticky top-0 inset-x-0 z-40 bg-[#FFFDF8]/95 backdrop-blur-md border-b border-[#EFECE4] shadow-xs">
       <div className="max-w-6xl mx-auto h-16 px-4 sm:px-6 flex items-center justify-between gap-3">
-        {/* Left: Kolhapur Royal Brand logo */}
+        {/* Left: ParkNExplore Brand Logo */}
         <div
           onClick={() => onNavTabChange('home')}
-          className="flex items-center gap-2.5 cursor-pointer flex-shrink-0 group"
+          className="cursor-pointer flex-shrink-0 group"
         >
-          {/* Royal 'P' monogram */}
-          <div className="w-10 h-10 rounded-xl bg-[#7B2638] text-[#FFFDF8] flex items-center justify-center font-serif text-xl font-black shadow-md border border-[#C6A15B]/30 group-hover:scale-105 transition-transform">
-            P
-          </div>
-          <div className="flex flex-col min-w-0">
-            <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-[17px] text-[#7B2638] font-serif tracking-tight leading-none">
-                ParkN<span className="text-[#C6A15B]">Explore</span>
-              </span>
-              <span className="text-[9px] font-extrabold text-[#7B2638] px-1.5 py-0.5 rounded bg-[#C6A15B]/20 uppercase tracking-wider border border-[#C6A15B]/30">
-                KMC
-              </span>
-            </div>
-            <span className="text-[11px] text-[#5e5954] leading-tight mt-0.5 font-medium truncate max-w-[200px] sm:max-w-none">
-              {t.nav.municipalMobility}
-            </span>
-          </div>
+          <ParkNExploreLogo
+            size="md"
+            subtitle={t.nav.municipalMobility}
+            showKmcBadge={true}
+          />
         </div>
 
         {/* Center: Dynamic Role-Based Desktop Navigation */}

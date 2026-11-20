@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="pneBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#8C2B3E" />
+      <stop offset="50%" stopColor="#7B2638" />
+      <stop offset="100%" stopColor="#4F131F" />
+    </linearGradient>
+    <linearGradient id="pneGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#FFF2D1" />
+      <stop offset="35%" stopColor="#E5C171" />
+      <stop offset="70%" stopColor="#C6A15B" />
+      <stop offset="100%" stopColor="#8A6726" />
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" rx="24" fill="url(#pneBg)" stroke="#C6A15B" stroke-width="2" />
+  <path d="M 20 82 C 28 82, 38 78, 48 70 C 60 60, 72 58, 82 62" stroke="#E5C171" stroke-width="4" stroke-linecap="round" opacity="0.8" />
+  <path d="M 26 22 C 26 19.8 27.8 18 30 18 H 36 C 38.2 18 40 19.8 40 22 V 76 C 40 78.2 38.2 80 36 80 H 30 C 27.8 80 26 78.2 26 76 Z" fill="url(#pneGold)" />
+  <path d="M 38 18 C 54 18, 76 22, 76 40 C 76 56, 56 60, 38 60 Z" fill="url(#pneGold)" />
+  <path d="M 39 28 C 48 28, 62 30, 62 40 C 62 48, 50 50, 39 50 Z" fill="#7B2638" />
+  <g transform="translate(50, 39)">
+    <circle cx="0" cy="0" r="14" fill="#E5C171" opacity="0.25" />
+    <polygon points="0,-13 2.5,-3 0,0 -2.5,-3" fill="#FFF4D6" />
+    <polygon points="0,13 2.5,3 0,0 -2.5,3" fill="#E5C171" />
+    <polygon points="13,0 3,2.5 0,0 3,-2.5" fill="#FFF4D6" />
+    <polygon points="-13,0 -3,2.5 0,0 -3,-2.5" fill="#E5C171" />
+    <circle cx="0" cy="0" r="2.2" fill="#7B2638" />
+    <circle cx="0" cy="0" r="1.2" fill="#FFFDF8" />
+  </g>
+  <path d="M 33 13 C 33 13, 40 10, 47 13 C 44 15, 36 15, 33 13 Z" fill="#FFF4D6" opacity="0.9" />
+</svg>
