@@ -147,7 +147,7 @@ export const INITIAL_DESTINATIONS: KolhapurDestination[] = [
     marathiName: 'खासबाग मैदान (राजर्षी शाहू कुस्ती आखाडा)',
     tagline: '1912 Royal Wrestling Arena — Kolhapur, Wrestling Capital of India',
     description: 'Built by Rajarshi Shahu Maharaj in 1912, this open-air red-soil akhaada seats 30,000+ spectators and hosts historic national wrestling dangals (Hind Kesari, Maharashtra Kesari).',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Khasbag_Maidan_Wrestling_Kolhapur.jpg/1280px-Khasbag_Maidan_Wrestling_Kolhapur.jpg',
+    imageUrl: '/images/khasbag-maidan.jpg',
     imageAlt: 'Authentic photograph of Khasbag Maidan wrestling arena, Kolhapur',
     associatedHubId: 'hub-khasbag-maidan',
     walkingDistance: '40m to Stadium South Gate',
@@ -1504,7 +1504,7 @@ export const INITIAL_HUBS: ParkingHub[] = [
     hasCctv: true,
     hasCoveredShade: true,
     landmark: 'Khasbag Maidan',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Khasbag_Maidan_Wrestling_Kolhapur.jpg/1280px-Khasbag_Maidan_Wrestling_Kolhapur.jpg',
+    imageUrl: '/images/khasbag-maidan.jpg',
     coordinates: { lat: 16.6912, lng: 74.2298 },
     aiAdvisory: {
       badge: 'AI ADVISORY',
