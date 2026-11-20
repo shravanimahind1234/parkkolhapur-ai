@@ -20,6 +20,7 @@ import { CustomerDashboard } from './components/CustomerDashboard';
 import { OwnerDashboard } from './components/OwnerDashboard';
 import { AdminDashboard } from './components/AdminDashboard';
 import { LocationDetailsModal } from './components/LocationDetailsModal';
+import { PageLoader } from './components/PageLoader';
 import {
   INITIAL_HUBS,
   INITIAL_BOOKINGS,
@@ -53,6 +54,14 @@ import { RefreshCw, MapPin, List, Sparkles, Database, Lock, ShieldCheck } from '
 export default function App() {
   // Navigation State
   const [activeTab, setActiveTab] = useState<TabType>('home');
+  const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsInitialLoading(false);
+    }, 750);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Search & Filter State
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -799,6 +808,9 @@ export default function App() {
         onRemoveVehicle={handleRemoveVehicle}
         onSetDefault={handleSetDefaultVehicle}
       />
+
+      {/* App Launch & Splash Screen with Royal Logo */}
+      <PageLoader isLoading={isInitialLoading} />
     </div>
   );
 }

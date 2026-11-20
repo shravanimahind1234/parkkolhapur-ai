@@ -25,6 +25,7 @@ import { INITIAL_DESTINATIONS } from '../data/mockData';
 import { ParkingHub, VehicleType, KolhapurDestination } from '../types';
 import { useLanguage } from '../i18n/LanguageContext';
 import { ParkNExploreLogo } from './ParkNExploreLogo';
+import { ImageWithLoader } from './ImageWithLoader';
 
 interface LandingPageProps {
   onFindParkingClick: () => void;
@@ -232,22 +233,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <div className="relative mx-auto max-w-md lg:max-w-none">
                 {/* Main Hero Real Photo: Mahalaxmi Temple */}
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl border-2 border-[#C6A15B]/30 aspect-[4/3] group">
-                  <img
+                  <ImageWithLoader
                     src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Mahalaxmi_Temple%2C_Kolhapur.jpg/1280px-Mahalaxmi_Temple%2C_Kolhapur.jpg"
                     alt="Authentic photograph of Mahalaxmi Temple, Kolhapur"
-                    referrerPolicy="no-referrer"
-                    onError={(e) => {
-                      const el = e.currentTarget;
-                      if (!el.dataset.tried) {
-                        el.dataset.tried = 'true';
-                        el.src = 'https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=1200&q=80';
-                      }
-                    }}
+                    containerClassName="w-full h-full"
                     className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                     loading="eager"
                   />
                   {/* Elegant Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#292725]/80 via-transparent to-black/20" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#292725]/80 via-transparent to-black/20 pointer-events-none" />
 
                   {/* Overlaid Badge & Title */}
                   <div className="absolute bottom-4 left-4 right-4 text-left">
@@ -425,23 +419,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     onViewLocationDetails ? 'cursor-pointer' : ''
                   }`}
                 >
-                  <img
+                  <ImageWithLoader
                     src={dest.imageUrl}
                     alt={dest.imageAlt}
-                    referrerPolicy="no-referrer"
-                    onError={(e) => {
-                      const el = e.currentTarget;
-                      if (!el.dataset.tried) {
-                        el.dataset.tried = 'true';
-                        el.src =
-                          'https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=1000&q=80';
-                      }
-                    }}
+                    containerClassName="w-full h-full"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                   />
                   {/* Attractive Light-Balanced Dark-Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#292725]/85 via-[#292725]/30 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#292725]/85 via-[#292725]/30 to-transparent pointer-events-none" />
 
                   {/* Overlaid Category Badge */}
                   <div className="absolute top-3 left-3">

@@ -23,6 +23,7 @@ import {
   Calendar,
 } from 'lucide-react';
 import { ParkingHub, KolhapurDestination, VehicleType, NearbyPlace, PoiCategory } from '../types';
+import { ImageWithLoader } from './ImageWithLoader';
 import { useLanguage } from '../i18n/LanguageContext';
 
 interface LocationDetailsModalProps {
@@ -95,22 +96,15 @@ export const LocationDetailsModal: React.FC<LocationDetailsModalProps> = ({
         
         {/* HERO IMAGE HEADER */}
         <div className="relative h-56 sm:h-64 w-full bg-[#292725] overflow-hidden flex-shrink-0">
-          <img
+          <ImageWithLoader
             src={destination?.imageUrl || hub.imageUrl || 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Mahalaxmi_Temple%2C_Kolhapur.jpg/1280px-Mahalaxmi_Temple%2C_Kolhapur.jpg'}
             alt={destination?.imageAlt || hub.name}
-            referrerPolicy="no-referrer"
-            onError={(e) => {
-              const el = e.currentTarget;
-              if (!el.dataset.tried) {
-                el.dataset.tried = 'true';
-                el.src =
-                  'https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=1200&q=80';
-              }
-            }}
+            containerClassName="w-full h-full"
             className="w-full h-full object-cover"
+            loading="eager"
           />
           {/* Authentic Light-Balanced Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#292725] via-[#292725]/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#292725] via-[#292725]/40 to-transparent pointer-events-none" />
 
           {/* Top Controls */}
           <div className="absolute top-4 inset-x-4 flex items-center justify-between z-10">

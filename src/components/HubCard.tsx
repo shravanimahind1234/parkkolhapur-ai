@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { ParkingHub, VehicleType, PoiCategory } from '../types';
 import { useLanguage } from '../i18n/LanguageContext';
+import { ImageWithLoader } from './ImageWithLoader';
 
 interface HubCardProps {
   hub: ParkingHub;
@@ -68,22 +69,15 @@ export const HubCard: React.FC<HubCardProps> = ({
             onViewDetails ? 'cursor-pointer' : ''
           }`}
         >
-          <img
+          <ImageWithLoader
             src={hub.imageUrl}
             alt={hub.name}
-            referrerPolicy="no-referrer"
-            onError={(e) => {
-              const el = e.currentTarget;
-              if (!el.dataset.tried) {
-                el.dataset.tried = 'true';
-                el.src = 'https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=800&q=80';
-              }
-            }}
+            containerClassName="w-full h-full"
             className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
             loading="lazy"
           />
           {/* Elegant Dark Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#292725]/85 via-[#292725]/25 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#292725]/85 via-[#292725]/25 to-transparent pointer-events-none" />
 
           {/* Top Badges Overlaid on Real Photo */}
           <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1.5 z-10">
