@@ -21,7 +21,7 @@ export const INITIAL_DESTINATIONS: KolhapurDestination[] = [
     marathiName: 'श्री क्षेत्र ज्योतिबा देवस्थान (वाडी रत्नागिरी)',
     tagline: 'Sacred Sahyadri Hilltop Shrine & Vibrant Pink Gulal Fair',
     description: 'Perched at 3,124 feet on Wadi Ratnagiri hill 18km northwest of Kolhapur, dedicated to Kedarnath Jyotiba. Pilgrims offer vibrant pink gulal amidst majestic Sahyadri mountain views.',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Jyotiba_temple_Kolhapur_Maharashtra.jpg/1280px-Jyotiba_temple_Kolhapur_Maharashtra.jpg',
+    imageUrl: '/images/jyotiba-temple.jpg',
     imageAlt: 'Authentic photograph of Jyotiba Temple on Wadi Ratnagiri hill, Kolhapur',
     associatedHubId: 'hub-jyotiba-hill',
     walkingDistance: '120m to Main Temple Steps & Concourse',
@@ -1014,7 +1014,7 @@ export const INITIAL_HUBS: ParkingHub[] = [
     hasCctv: true,
     hasCoveredShade: true,
     landmark: 'Jyotiba Temple',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Jyotiba_temple_Kolhapur_Maharashtra.jpg/1280px-Jyotiba_temple_Kolhapur_Maharashtra.jpg',
+    imageUrl: '/images/jyotiba-temple.jpg',
     coordinates: { lat: 16.8015, lng: 74.1782 },
     aiAdvisory: {
       badge: 'AI ADVISORY',
