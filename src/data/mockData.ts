@@ -77,7 +77,7 @@ export const INITIAL_DESTINATIONS: KolhapurDestination[] = [
     marathiName: 'सिद्धगिरी ग्रामजीवन संग्रहालय (कणेरी मठ)',
     tagline: 'Ancient Shiva Math & 1,000+ Sculpture Living Rural Village Museum',
     description: 'Located 12km from Kolhapur along NH 48, this world-renowned open-air museum depicts ancient Indian 12 Balutedar self-reliant village life with 1,000+ lifelike statues, historic gurukuls, and a 1200-year-old Shiva Linga.',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Kanheri_math.jpg/1280px-Kanheri_math.jpg',
+    imageUrl: '/images/kaneri-math.jpg',
     imageAlt: 'Authentic photograph of Siddhagiri Gramjivan Museum at Kaneri Math, Kolhapur',
     associatedHubId: 'hub-kaneri-math',
     walkingDistance: '80m to Museum Complex Gate',
@@ -1098,7 +1098,7 @@ export const INITIAL_HUBS: ParkingHub[] = [
     hasCctv: true,
     hasCoveredShade: true,
     landmark: 'Kaneri Math',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Kanheri_math.jpg/1280px-Kanheri_math.jpg',
+    imageUrl: '/images/kaneri-math.jpg',
     coordinates: { lat: 16.6025, lng: 74.2885 },
     aiAdvisory: {
       badge: 'AI ADVISORY',
