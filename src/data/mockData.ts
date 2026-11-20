@@ -133,7 +133,7 @@ export const INITIAL_DESTINATIONS: KolhapurDestination[] = [
     marathiName: 'नृसिंहवाडी (दत्त मंदिर व कृष्णा-पंचगंगा संगम)',
     tagline: 'Holy Confluence of Krishna-Panchganga & Seat of Shri Narasimha Saraswati',
     description: 'Revered pilgrimage temple at the sacred river confluence 45km from Kolhapur, renowned for holy river ghats, divine evening aartis, and world-famous Basundi & Kavat barfi.',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Narasimha_temple_Narasimhavadi.jpg/1280px-Narasimha_temple_Narasimhavadi.jpg',
+    imageUrl: '/images/narsobachi-wadi.jpg',
     imageAlt: 'Authentic photograph of Narsobachi Wadi Krishna river ghat temple, Kolhapur',
     associatedHubId: 'hub-narsobachi-wadi',
     walkingDistance: '150m to Krishna River Ghat',
@@ -1423,7 +1423,7 @@ export const INITIAL_HUBS: ParkingHub[] = [
     hasCctv: true,
     hasCoveredShade: true,
     landmark: 'Narsobachi Wadi',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Narasimha_temple_Narasimhavadi.jpg/1280px-Narasimha_temple_Narasimhavadi.jpg',
+    imageUrl: '/images/narsobachi-wadi.jpg',
     coordinates: { lat: 16.6915, lng: 74.6012 },
     aiAdvisory: {
       badge: 'AI ADVISORY',
