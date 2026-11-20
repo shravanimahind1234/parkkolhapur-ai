@@ -1,5 +1,5 @@
 -- ========================================================================
--- ParkKolhapur AI • Strict Role-Based Database Security & RLS
+-- ParkNExplore • Strict Role-Based Database Security & RLS
 -- Project URL: https://rfgnsgjhschjoabqkcvo.supabase.co
 -- ========================================================================
 

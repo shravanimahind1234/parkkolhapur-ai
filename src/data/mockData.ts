@@ -1851,7 +1851,7 @@ export const LANDMARKS = [
 
 export const SHUTTLE_INFO = {
   name: 'Special Ambabai Darshan Shuttles',
-  tagline: 'Temple Corridor Transit • Free for ParkKolhapur Ticket Holders',
+  tagline: 'Temple Corridor Transit • Free for ParkNExplore Ticket Holders',
   route: 'South Gate Parking Hub ➔ Bhavani Mandap Arch ➔ Temple Mahadwar Gate',
   frequency: 'Every 4-6 minutes',
   fleet: '12 Eco-Friendly Battery E-Rickshaws',

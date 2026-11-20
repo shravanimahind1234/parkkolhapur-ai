@@ -751,10 +751,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <div>
             <div className="flex items-center gap-2 mb-2">
               <div className="w-7 h-7 rounded-lg bg-[#7B2638] text-[#FFFDF8] flex items-center justify-center font-serif font-black text-sm">
-                क
+                P
               </div>
               <span className="font-extrabold text-[15px] text-[#7B2638] font-serif">
-                ParkKolhapur AI
+                ParkN<span className="text-[#C6A15B]">Explore</span>
               </span>
             </div>
             <p className="text-[#5e5954] leading-relaxed">

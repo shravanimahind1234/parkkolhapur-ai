@@ -51,14 +51,14 @@ export const Header: React.FC<HeaderProps> = ({
           onClick={() => onNavTabChange('home')}
           className="flex items-center gap-2.5 cursor-pointer flex-shrink-0 group"
         >
-          {/* Royal Kolhapur 'क' monogram */}
+          {/* Royal 'P' monogram */}
           <div className="w-10 h-10 rounded-xl bg-[#7B2638] text-[#FFFDF8] flex items-center justify-center font-serif text-xl font-black shadow-md border border-[#C6A15B]/30 group-hover:scale-105 transition-transform">
-            क
+            P
           </div>
           <div className="flex flex-col min-w-0">
             <div className="flex items-center gap-1.5">
               <span className="font-extrabold text-[17px] text-[#7B2638] font-serif tracking-tight leading-none">
-                ParkKolhapur<span className="text-[#C6A15B] ml-0.5 font-sans text-xs uppercase font-extrabold">AI</span>
+                ParkN<span className="text-[#C6A15B]">Explore</span>
               </span>
               <span className="text-[9px] font-extrabold text-[#7B2638] px-1.5 py-0.5 rounded bg-[#C6A15B]/20 uppercase tracking-wider border border-[#C6A15B]/30">
                 KMC

@@ -13,7 +13,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
     try {
-      const saved = localStorage.getItem('parkkolhapur_lang') as Language;
+      const saved = (localStorage.getItem('parknexplore_lang') || localStorage.getItem('parkkolhapur_lang')) as Language;
       if (saved && (saved === 'en' || saved === 'mr' || saved === 'hi')) {
         return saved;
       }
@@ -26,7 +26,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     try {
-      localStorage.setItem('parkkolhapur_lang', lang);
+      localStorage.setItem('parknexplore_lang', lang);
       document.documentElement.lang = lang;
     } catch {
       // ignore

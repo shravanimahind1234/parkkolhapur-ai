@@ -121,10 +121,10 @@ export const ShuttleModal: React.FC<ShuttleModalProps> = ({ isOpen, onClose }) =
             <ShieldCheck className="w-4 h-4 text-[#26965B] flex-shrink-0" />
             <span>
               {language === 'mr'
-                ? 'मोफत प्रवासासाठी चालकाला आपला डिजिटल पार्क कोल्हापूर पास दाखवा.'
+                ? 'मोफत प्रवासासाठी चालकाला आपला डिजिटल ParkNExplore पास दाखवा.'
                 : language === 'hi'
-                ? 'मुफ्त यात्रा के लिए चालक को अपना डिजिटल पार्क कोल्हापुर पास दिखाएं।'
-                : 'Show your digital ParkKolhapur pass to the driver for free boarding.'}
+                ? 'मुफ्त यात्रा के लिए चालक को अपना डिजिटल ParkNExplore पास दिखाएं।'
+                : 'Show your digital ParkNExplore pass to the driver for free boarding.'}
             </span>
           </div>
 

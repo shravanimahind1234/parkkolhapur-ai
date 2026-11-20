@@ -144,12 +144,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             {/* Header */}
             <div className="flex items-center gap-3 border-b border-[#EFECE4] pb-3">
               <div className="w-12 h-12 rounded-2xl bg-[#7B2638] text-[#FFFDF8] flex items-center justify-center font-serif text-2xl font-black shadow-md">
-                क
+                P
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
                   <h2 className="text-[19px] font-extrabold text-[#7B2638] font-serif tracking-tight">
-                    ParkKolhapur AI
+                    ParkN<span className="text-[#C6A15B]">Explore</span>
                   </h2>
                   <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#C6A15B]/20 text-[#7B2638] uppercase tracking-wider">
                     KMC
