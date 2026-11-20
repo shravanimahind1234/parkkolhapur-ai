@@ -119,7 +119,7 @@ export const INITIAL_DESTINATIONS: KolhapurDestination[] = [
     marathiName: 'टाऊन हॉल म्युझियम व वनस्पती उद्यान',
     tagline: '1876 Victorian Neo-Gothic Palace & Satavahana Excavations',
     description: 'Major Charles Mant’s 1876 neo-Gothic mansion set in lush botanical grounds, housing Brahmapuri archaeological finds, Roman bronze Poseidon, Satavahana coins, and royal weapons.',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Town_Hall_Museum%2C_Kolhapur.jpg/1280px-Town_Hall_Museum%2C_Kolhapur.jpg',
+    imageUrl: '/images/town-hall-museum.jpg',
     imageAlt: 'Authentic photograph of Town Hall Museum and Garden, Kolhapur',
     associatedHubId: 'hub-town-hall',
     walkingDistance: '50m to Museum Portico',
@@ -1342,7 +1342,7 @@ export const INITIAL_HUBS: ParkingHub[] = [
     hasCctv: true,
     hasCoveredShade: true,
     landmark: 'Town Hall Museum',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Town_Hall_Museum%2C_Kolhapur.jpg/1280px-Town_Hall_Museum%2C_Kolhapur.jpg',
+    imageUrl: '/images/town-hall-museum.jpg',
     coordinates: { lat: 16.6985, lng: 74.2285 },
     aiAdvisory: {
       badge: 'AI ADVISORY',
