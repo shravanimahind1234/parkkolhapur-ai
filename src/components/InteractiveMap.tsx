@@ -16,6 +16,10 @@ import {
   Phone,
   Star,
   X,
+  Satellite,
+  Globe,
+  ExternalLink,
+  Radio,
 } from 'lucide-react';
 import { ParkingHub, VehicleType, NearbyPlace, PoiCategory } from '../types';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -41,7 +45,8 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
 }) => {
   const { t, language } = useLanguage();
   const [activePin, setActivePin] = useState<ParkingHub | null>(selectedHub || hubs[0] || null);
-  const [mapLayer, setMapLayer] = useState<'streets' | 'transit'>('streets');
+  const [mapLayer, setMapLayer] = useState<'streets' | 'transit' | 'satellite'>('streets');
+  const [satelliteMode, setSatelliteMode] = useState<'interactive' | 'radar'>('interactive');
   const [poiCategoryFilter, setPoiCategoryFilter] = useState<'all' | 'hospital' | 'food' | 'stay' | 'none'>('all');
   const [selectedPoi, setSelectedPoi] = useState<{ poi: NearbyPlace; parentHub: ParkingHub } | null>(null);
 
@@ -141,6 +146,18 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
             >
               {language === 'mr' ? 'प्रवासी कॉरिडॉर' : language === 'hi' ? 'ट्रांजिट कॉरिडोर' : 'Transit Corridor'}
             </button>
+            <button
+              type="button"
+              onClick={() => setMapLayer('satellite')}
+              className={`px-2.5 py-1 text-[11px] font-bold rounded-md transition-all cursor-pointer flex items-center gap-1.5 ${
+                mapLayer === 'satellite'
+                  ? 'bg-[#7B2638] text-[#FFFDF8] shadow-xs'
+                  : 'text-[#5e5954] hover:text-[#292725]'
+              }`}
+            >
+              <Satellite className="w-3.5 h-3.5 text-[#C6A15B]" />
+              <span>{language === 'mr' ? 'उपग्रह थेट दृश्य' : language === 'hi' ? 'सैटेलाइट लाइव' : 'Live Satellite'}</span>
+            </button>
           </div>
         </div>
       </div>
@@ -207,71 +224,245 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
         )}
       </div>
 
-      {/* SVG Canvas Map */}
-      <div className="relative w-full h-72 sm:h-96 bg-[#F7F4EE] overflow-hidden select-none">
-        {/* Decorative Kolhapur Cartography Schematic */}
-        <svg
-          className="absolute inset-0 w-full h-full pointer-events-none"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-        >
-          {/* Panchganga River Curve */}
-          <path
-            d="M 0,25 Q 35,32 55,10 Q 75,-5 100,8"
-            fill="none"
-            stroke="#bde3f7"
-            strokeWidth="3.5"
-            strokeLinecap="round"
-            opacity="0.8"
+      {/* Realtime Satellite Telemetry HUD Strip */}
+      {mapLayer === 'satellite' && (
+        <div className="px-3 py-2 bg-[#17211b] text-[#FFFDF8] flex items-center justify-between gap-2 text-[11px] flex-wrap border-b border-[#2d3a33]">
+          <div className="flex items-center gap-2">
+            <span className="flex items-center gap-1 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-[#26965B] text-white tracking-wider shadow-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+              {language === 'mr' ? 'थेट उपग्रह लिंक' : language === 'hi' ? 'लाइव सैटेलाइट लिंक' : 'Live Satellite Stream'}
+            </span>
+            <span className="text-[11px] text-[#C6A15B] font-mono font-bold">
+              {activePin ? `${activePin.coordinates.lat.toFixed(4)}°N, ${activePin.coordinates.lng.toFixed(4)}°E` : '16.6946°N, 74.2236°E'}
+            </span>
+            <span className="text-[10px] text-white/70 hidden md:inline">
+              • {activePin?.landmark || 'Kolhapur Heritage Core'} • {language === 'mr' ? 'हाय-रेझोल्युशन ऑर्थोइमेजरी' : language === 'hi' ? 'हाई-रिजोल्यूशन ऑर्थोइमेजरी' : 'High-Res Optical Imagery'}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <div className="flex rounded-md bg-[#0d1410] p-0.5 border border-[#2d3a33] text-[10px]">
+              <button
+                type="button"
+                onClick={() => setSatelliteMode('interactive')}
+                className={`px-2 py-0.5 rounded font-bold transition-all cursor-pointer ${
+                  satelliteMode === 'interactive'
+                    ? 'bg-[#7B2638] text-white shadow-xs'
+                    : 'text-white/60 hover:text-white'
+                }`}
+              >
+                {language === 'mr' ? 'थेट नकाशा' : language === 'hi' ? 'लाइव मैप' : 'Live Pan/Zoom'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setSatelliteMode('radar')}
+                className={`px-2 py-0.5 rounded font-bold transition-all cursor-pointer ${
+                  satelliteMode === 'radar'
+                    ? 'bg-[#7B2638] text-white shadow-xs'
+                    : 'text-white/60 hover:text-white'
+                }`}
+              >
+                {language === 'mr' ? 'रडार ग्रिड' : language === 'hi' ? 'रडार ग्रिड' : 'Radar Grid'}
+              </button>
+            </div>
+
+            {activePin && (
+              <a
+                href={`https://www.google.com/maps/@${activePin.coordinates.lat},${activePin.coordinates.lng},18z/data=!3m1!1e3`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] font-bold text-[#C6A15B] hover:text-white flex items-center gap-1 bg-[#0d1410] px-2 py-1 rounded border border-[#2d3a33] transition-colors cursor-pointer"
+                title="Open 3D Satellite in Google Maps"
+              >
+                <Globe className="w-3 h-3 text-[#C6A15B]" />
+                <span className="hidden sm:inline">3D Earth ↗</span>
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Main Canvas View: Interactive Satellite Iframe OR Schematics/Radar SVG */}
+      {mapLayer === 'satellite' && satelliteMode === 'interactive' ? (
+        <div className="relative w-full h-80 sm:h-[440px] bg-[#0c1410] overflow-hidden select-none">
+          {/* Embedded Real Satellite View */}
+          <iframe
+            key={`${activePin?.id || 'hub'}-${activePin?.coordinates.lat}-${activePin?.coordinates.lng}`}
+            src={`https://maps.google.com/maps?q=${activePin?.coordinates.lat || 16.6946},${activePin?.coordinates.lng || 74.2236}&t=k&z=17&ie=UTF8&iwloc=&output=embed`}
+            className="w-full h-full border-0 filter contrast-[1.05]"
+            allowFullScreen
+            loading="lazy"
+            title="Kolhapur Realtime Satellite View"
           />
-          <text x="28" y="27" fill="#6baed6" fontSize="2.2" fontStyle="italic" fontWeight="bold">
-            Panchganga River
-          </text>
 
-          {/* Rankala Lake Geometry */}
-          <ellipse cx="22" cy="67" rx="11" ry="8" fill="#d9f0fc" stroke="#90cdf4" strokeWidth="0.8" />
-          <text x="17" y="68" fill="#3182ce" fontSize="2.4" fontWeight="bold">
-            Rankala Lake
-          </text>
+          {/* Quick Hub Focus Selector Carousel on Top */}
+          <div className="absolute top-2.5 inset-x-2 flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar z-20">
+            {hubs.map((hub) => {
+              const isSelected = activePin?.id === hub.id;
+              return (
+                <button
+                  key={hub.id}
+                  type="button"
+                  onClick={() => {
+                    setActivePin(hub);
+                    setSelectedPoi(null);
+                    onSelectHub(hub);
+                  }}
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-bold whitespace-nowrap transition-all cursor-pointer backdrop-blur-md flex items-center gap-1.5 shadow-md border ${
+                    isSelected
+                      ? 'bg-[#7B2638] text-white border-[#C6A15B] ring-2 ring-[#C6A15B]/50'
+                      : 'bg-black/65 text-white/90 hover:bg-black/85 border-white/20'
+                  }`}
+                >
+                  <span
+                    className={`w-2 h-2 rounded-full ${
+                      hub.openBays <= 5 ? 'bg-[#D94B4B] animate-ping' : 'bg-[#26965B]'
+                    }`}
+                  />
+                  <span>{hub.landmark || hub.name}</span>
+                  <span className="text-[10px] text-[#C6A15B] font-mono">({hub.openBays})</span>
+                </button>
+              );
+            })}
+          </div>
 
-          {/* Major Kolhapur City Roads */}
-          {/* Station Road (CBS to Rajwada) */}
-          <path d="M 75,42 Q 60,45 47,48" fill="none" stroke="#EFECE4" strokeWidth="2.5" />
-          <path d="M 75,42 Q 60,45 47,48" fill="none" stroke="#C6A15B" strokeWidth="0.8" strokeDasharray="1.5,1" />
+          {/* Floating Live Lot Status Card on Satellite */}
+          {activePin && (
+            <div className="absolute bottom-3 left-3 right-3 sm:right-auto sm:w-88 z-20 bg-[#FFFDF8]/95 backdrop-blur-md rounded-2xl border border-[#C6A15B]/50 shadow-2xl p-3 text-left">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded bg-[#7B2638] text-white">
+                      {activePin.landmark}
+                    </span>
+                    <span className="text-[10px] text-[#5e5954] font-mono">
+                      {activePin.coordinates.lat.toFixed(4)}°N, {activePin.coordinates.lng.toFixed(4)}°E
+                    </span>
+                  </div>
+                  <h4 className="text-[13px] font-bold text-[#7B2638] truncate mt-1">
+                    {activePin.name}
+                  </h4>
+                  <div className="flex items-center gap-2 text-[11px] text-[#292725] mt-1">
+                    <span className="font-extrabold text-[#26965B] flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#26965B]" />
+                      {activePin.openBays} Bays Free
+                    </span>
+                    <span className="text-[#5e5954]">•</span>
+                    <span className="font-bold text-[#7B2638]">₹{activePin.hourlyRate[selectedVehicle]}/hr</span>
+                  </div>
+                </div>
 
-          {/* Mahadwar Road & Bhavani Mandap Road */}
-          <path d="M 47,48 L 42,55 L 22,63" fill="none" stroke="#EFECE4" strokeWidth="2" />
-          <path d="M 42,55 L 22,63" fill="none" stroke="#7B2638" strokeWidth="0.6" strokeDasharray="1,1" />
-
-          {/* Highway to Panhala */}
-          <path d="M 47,48 Q 30,35 12,15" fill="none" stroke="#EFECE4" strokeWidth="1.8" />
-
-          {/* Kasaba Bawada Road to New Palace */}
-          <path d="M 47,48 Q 55,35 62,22" fill="none" stroke="#EFECE4" strokeWidth="2" />
-
-          {/* Temple Corridor Free Shuttle Route Line */}
-          {mapLayer === 'transit' && (
-            <path
-              d="M 42,55 L 45,51 L 47,48"
-              fill="none"
-              stroke="#E6A23C"
-              strokeWidth="1.8"
-              strokeDasharray="2,1"
-              className="animate-pulse"
-            />
+                <div className="flex flex-col gap-1.5 flex-shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => onBookHub(activePin)}
+                    className="h-8 px-3 rounded-lg bg-[#7B2638] hover:bg-[#5e1c2a] text-white text-[11px] font-bold flex items-center gap-1 shadow-sm transition-all cursor-pointer whitespace-nowrap"
+                  >
+                    <span>{t.hubCard.selectSlot}</span>
+                    <ArrowRight className="w-3 h-3 text-[#C6A15B]" />
+                  </button>
+                  {onViewDetails && (
+                    <button
+                      type="button"
+                      onClick={() => onViewDetails(activePin)}
+                      className="h-7 px-2 rounded-lg bg-[#F7F4EE] hover:bg-[#EFECE4] text-[#7B2638] text-[10px] font-bold flex items-center justify-center transition-colors border border-[#EFECE4] cursor-pointer"
+                    >
+                      <span>{t.hubCard.fullDetails}</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
           )}
-        </svg>
+        </div>
+      ) : (
+        <div className={`relative w-full h-72 sm:h-96 ${mapLayer === 'satellite' ? 'bg-[#0a130e]' : 'bg-[#F7F4EE]'} overflow-hidden select-none`}>
+          {/* Decorative Kolhapur Cartography Schematic */}
+          <svg
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+          >
+            {/* Satellite Grid Lines if in satellite radar mode */}
+            {mapLayer === 'satellite' && (
+              <g opacity="0.15" stroke="#38bdf8" strokeWidth="0.25">
+                <line x1="0" y1="20" x2="100" y2="20" />
+                <line x1="0" y1="40" x2="100" y2="40" />
+                <line x1="0" y1="60" x2="100" y2="60" />
+                <line x1="0" y1="80" x2="100" y2="80" />
+                <line x1="20" y1="0" x2="20" y2="100" />
+                <line x1="40" y1="0" x2="40" y2="100" />
+                <line x1="60" y1="0" x2="60" y2="100" />
+                <line x1="80" y1="0" x2="80" y2="100" />
+                <circle cx="50" cy="50" r="35" fill="none" stroke="#38bdf8" strokeDasharray="2,2" />
+              </g>
+            )}
 
-        {/* Landmark Landmarks Text Labels */}
-        <div className="absolute top-4 left-3 text-[10px] font-bold text-[#7B2638]/70 bg-[#FFFDF8]/90 px-2 py-0.5 rounded border border-[#EFECE4] shadow-xs pointer-events-none">
-          Panhala Range ↗
-        </div>
-        <div className="absolute top-4 right-3 text-[10px] font-bold text-[#7B2638]/70 bg-[#FFFDF8]/90 px-2 py-0.5 rounded border border-[#EFECE4] shadow-xs pointer-events-none">
-          New Palace / Kasaba Bawada
-        </div>
-        <div className="absolute bottom-3 right-3 text-[10px] font-bold text-[#5e5954] bg-[#FFFDF8]/90 px-2 py-0.5 rounded border border-[#EFECE4] shadow-xs pointer-events-none">
-          CBS Station Road Interchange ↘
-        </div>
+            {/* Panchganga River Curve */}
+            <path
+              d="M 0,25 Q 35,32 55,10 Q 75,-5 100,8"
+              fill="none"
+              stroke={mapLayer === 'satellite' ? '#38bdf8' : '#bde3f7'}
+              strokeWidth="3.5"
+              strokeLinecap="round"
+              opacity={mapLayer === 'satellite' ? 0.95 : 0.8}
+            />
+            <text x="28" y="27" fill={mapLayer === 'satellite' ? '#7dd3fc' : '#6baed6'} fontSize="2.2" fontStyle="italic" fontWeight="bold">
+              Panchganga River
+            </text>
+
+            {/* Rankala Lake Geometry */}
+            <ellipse
+              cx="22"
+              cy="67"
+              rx="11"
+              ry="8"
+              fill={mapLayer === 'satellite' ? '#075985' : '#d9f0fc'}
+              stroke={mapLayer === 'satellite' ? '#38bdf8' : '#90cdf4'}
+              strokeWidth={mapLayer === 'satellite' ? 1.5 : 0.8}
+            />
+            <text x="17" y="68" fill={mapLayer === 'satellite' ? '#e0f2fe' : '#3182ce'} fontSize="2.4" fontWeight="bold">
+              Rankala Lake
+            </text>
+
+            {/* Major Kolhapur City Roads */}
+            {/* Station Road (CBS to Rajwada) */}
+            <path d="M 75,42 Q 60,45 47,48" fill="none" stroke={mapLayer === 'satellite' ? '#1e293b' : '#EFECE4'} strokeWidth="2.5" />
+            <path d="M 75,42 Q 60,45 47,48" fill="none" stroke={mapLayer === 'satellite' ? '#38bdf8' : '#C6A15B'} strokeWidth="0.8" strokeDasharray="1.5,1" />
+
+            {/* Mahadwar Road & Bhavani Mandap Road */}
+            <path d="M 47,48 L 42,55 L 22,63" fill="none" stroke={mapLayer === 'satellite' ? '#1e293b' : '#EFECE4'} strokeWidth="2" />
+            <path d="M 42,55 L 22,63" fill="none" stroke={mapLayer === 'satellite' ? '#f43f5e' : '#7B2638'} strokeWidth={mapLayer === 'satellite' ? 0.8 : 0.6} strokeDasharray="1,1" />
+
+            {/* Highway to Panhala */}
+            <path d="M 47,48 Q 30,35 12,15" fill="none" stroke={mapLayer === 'satellite' ? '#1e293b' : '#EFECE4'} strokeWidth="1.8" />
+
+            {/* Kasaba Bawada Road to New Palace */}
+            <path d="M 47,48 Q 55,35 62,22" fill="none" stroke={mapLayer === 'satellite' ? '#1e293b' : '#EFECE4'} strokeWidth="2" />
+
+            {/* Temple Corridor Free Shuttle Route Line */}
+            {mapLayer === 'transit' && (
+              <path
+                d="M 42,55 L 45,51 L 47,48"
+                fill="none"
+                stroke="#E6A23C"
+                strokeWidth="1.8"
+                strokeDasharray="2,1"
+                className="animate-pulse"
+              />
+            )}
+          </svg>
+
+          {/* Landmark Landmarks Text Labels */}
+          <div className="absolute top-4 left-3 text-[10px] font-bold text-[#7B2638]/70 bg-[#FFFDF8]/90 px-2 py-0.5 rounded border border-[#EFECE4] shadow-xs pointer-events-none">
+            Panhala Range ↗
+          </div>
+          <div className="absolute top-4 right-3 text-[10px] font-bold text-[#7B2638]/70 bg-[#FFFDF8]/90 px-2 py-0.5 rounded border border-[#EFECE4] shadow-xs pointer-events-none">
+            New Palace / Kasaba Bawada
+          </div>
+          <div className="absolute bottom-3 right-3 text-[10px] font-bold text-[#5e5954] bg-[#FFFDF8]/90 px-2 py-0.5 rounded border border-[#EFECE4] shadow-xs pointer-events-none">
+            CBS Station Road Interchange ↘
+          </div>
 
         {/* Interactive Hub Location Pins */}
         {hubs.map((hub) => {
@@ -592,6 +783,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
           </div>
         )}
       </div>
+      )}
 
       {/* Map Legend Footer */}
       <div className="p-2.5 bg-[#FFFDF8] border-t border-[#EFECE4] flex items-center justify-between text-[11px] text-[#5e5954] px-4 flex-wrap gap-2">
@@ -618,7 +810,9 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
           </div>
         </div>
         <span className="hidden sm:inline font-medium text-[#C6A15B]">
-          Click pin to preview & book bay
+          {mapLayer === 'satellite'
+            ? (language === 'mr' ? '🛰️ थेट उपग्रह ऑर्थोइमेजरी • ISRO / Google Earth' : language === 'hi' ? '🛰️ लाइव सैटेलाइट ऑर्थोइमेजरी • ISRO / Google Earth' : '🛰️ Realtime Satellite Imagery • ISRO / Google Earth')
+            : (language === 'mr' ? 'तपशील व बुकिंगसाठी पिनवर क्लिक करा' : language === 'hi' ? 'विवरण व बुकिंग के लिए पिन पर क्लिक करें' : 'Click pin to preview & book bay')}
         </span>
       </div>
     </div>
